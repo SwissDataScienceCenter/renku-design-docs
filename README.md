@@ -39,20 +39,20 @@ may include:
 - Fill in the copied template with design details, taking care to address the
   motivations, impact and design criteria/limitations
 
-- Submit a merge request for the RFC
+- Submit a pull request for the RFC - open a discussion on discourse to let the
+  Renku community know and solicit comments
 
-- After the merge request is merged, open a github discussion referencing the
-  RFC with a short introduction. Announce the discussion on discourse in case of
-  bigger changes. This allows the community to review the RFC and give feedback
+- After the pull request is approved and merged, the RFC should be considered
+  for entering into the development process.
 
-- A merged RFC can be modified, accepted or rejected.
+- A merged RFC can be modified further through additional PRs.
 
-Once an RFC has been accepted, it can be broken up into issues and implemented
+Once an RFC has been merged, it can be broken up into issues and implemented
 as usual. If the work is spread across multiple repositories, the issues should
 be organized into an epic in the main `renku` repository.
 
 RFCs are not meant to be set in stone and can be subject to change. As with any
 large undertaking, assumptions can turn out to be false, better solutions may
-present themselves or they may turn out to not be feasible after all. So RFCs
-can change after being accepted. But care should be taken to make them as robust
-as possible.
+present themselves or they may turn out to not be feasible after all. Therefore
+RFCs can change after being accepted, but care should be taken to make them as
+robust as possible.
