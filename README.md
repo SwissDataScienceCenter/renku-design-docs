@@ -34,7 +34,8 @@ may include:
 ## How to submit an RFC
 
 - Copy the `rfc-template.md` file and name it like `0000-my-feature.md` (with an
-  incrementing number and appropriate title)
+  incrementing number and appropriate title). Make a subdirectory in the
+  `design/` directory for your RFC.
 
 - Fill in the copied template with design details, taking care to address the
   motivations, impact and design criteria/limitations
