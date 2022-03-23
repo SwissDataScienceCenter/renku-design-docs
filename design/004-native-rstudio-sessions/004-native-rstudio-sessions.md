@@ -159,30 +159,38 @@ spec:
     configMap:
       name: jupyter-configmap
   culling:
-    idleCheckEndpoint:
+    idleCheckEndpoint: http://jupyter-server/active
     idleSecondsThreshold: 0
     maxAgeSecondsThreshold: 0
   auth:
     oidc:
     token:
-  servers:
-    - containerName: jupyter-server
-      url: /lab
-      image:
-      resources:
-        requests:
-          memory: 1G
-          cpu: 1
-      port: 8889
-      storage:
-        pvc:
-          enabled: true
-          mountPath: /home/jovyanl/work
-          storageClassName: cinder-csi
-        size: 1G
-      livenessProbe: {}
-      readinessProbe: {}
-      startupProbe: {}
+  server:
+    containerName: jupyter-server
+    image:
+    resources:
+      requests:
+        memory: 1G
+        cpu: 1
+    ingress:
+      - port: 8889
+        url: /lab
+      - port: 8890
+        url: /active
+      - port: 8891
+        url: /dashboard
+    storage:
+      pvc:
+        enabled: true
+        storageClassName: cinder-csi
+      size: 1G
+      mountPath: /home/jovyan/work
+    livenessProbe: {}
+    readinessProbe: {}
+    startupProbe: {}
+  auxContainers:
+    # same structure as server, but list
+    # add option to mount main server storage as read only in a specific place
   routing:
     host: dev.renku.ch
     ingressAnnotations:
