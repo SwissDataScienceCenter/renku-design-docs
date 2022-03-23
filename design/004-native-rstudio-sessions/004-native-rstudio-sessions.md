@@ -61,9 +61,8 @@ Then further in the Amalthea code we further reinforce and rely on these.
 
 ### More flexibility
 
-Make the "base Jinja templates" be a resource in k8s that users add. The current
-Jupyterserver templates can be one of many that are used. Any assumptions or strong decisions
-made about structure, organization, etc. Can be made there.
+Add a field in the CRD that defines a set of templates that are used. Here the user
+can pick between Jupyterlab or Rstudio. The current Jupyterserver templates can be one of many that are used. Any assumptions or strong decisions made about a specific session's structure, organization, etc. Can be made in these Jupyter or R-specific templates.
 
 ```mermaid
 graph TD
@@ -73,7 +72,7 @@ graph TD
     A2[Read fewer hardcoded Jinja templates]
     B[Parse variables from k8s manifest]
     C[Parse patches from k8s manifest]
-    C1[Parse Jinja configmap from k8s manifest]
+    C1[Read Jinja templates based on session type]
     D[Render Jinja tempaltes to yaml]
     E[Patch yaml] 
     F[Create k8s resources]
@@ -103,11 +102,6 @@ graph TD
 - PVC/Storage, but expect the user to patch in volume mount
 - Ingress, keep as is point service to auth proxy
 - Authentication, keep as is port 4180 is only entry and it goes through the auth proxy
-
-### Why not move everything to configmaps and make zero assumptions?
-- Then the Amalthea manifest is useless. The spec for amalthea just needs one field that points to a configmap that is then rendered and a list of patches.
-- The manifest also is a way to "surface" useful information about the session. I.e. about resources, ingress,
-storage, authentication.
 
 ### Current manifest
 
@@ -155,42 +149,26 @@ spec:
 
 ```yaml
 spec:
-  template:
-    configMap:
-      name: jupyter-configmap
+  type: jupyterlab # NEW
   culling:
-    idleCheckEndpoint: http://jupyter-server/active
     idleSecondsThreshold: 0
     maxAgeSecondsThreshold: 0
   auth:
     oidc:
-    token:
+      authorizedEmails:
+      - <user-email>
+      authorizedGroups: []
+      clientId: OidcClientName
+      clientSecret:
+        value: OidcSecretValue
+      enabled: true
+      issuerUrl: https://dev.renku.ch/auth/realms/Renku
+    token: ""
   server:
-    containerName: jupyter-server
+    defaultUrl:
     image:
     resources:
-      requests:
-        memory: 1G
-        cpu: 1
-    ingress:
-      - port: 8889
-        url: /lab
-      - port: 8890
-        url: /active
-      - port: 8891
-        url: /dashboard
-    storage:
-      pvc:
-        enabled: true
-        storageClassName: cinder-csi
-      size: 1G
-      mountPath: /home/jovyan/work
-    livenessProbe: {}
-    readinessProbe: {}
-    startupProbe: {}
-  auxContainers:
-    # same structure as server, but list
-    # add option to mount main server storage as read only in a specific place
+    rootDir: /home/jovyanl/work/<project_name>
   routing:
     host: dev.renku.ch
     ingressAnnotations:
@@ -202,26 +180,13 @@ spec:
     tls:
       enabled: true
       secretName: dev-renku-ch-tls
+  storage:
+    pvc:
+      enabled:
+      mountPath: /home/jovyanl/work
+      storageClassName:
+    size:
 ```
-
-### Ingress
-
-```mermaid
-graph LR
-    Internet[Internet]
-    Internet --> Ingress[Ingress]
-    subgraph K8s
-    Ingress --> Auth[Auth proxy<br />:4180<br />/sesssion/name]
-        subgraph Pod
-            Auth --> Traefik[Traefik<br />:8888]
-            Traefik --> S1[Server 1<br />:8889<br />/lab]
-            Traefik --> S2[Server 2<br />:8890<br />/dashboard]
-        end
-    end
-```
-
-### Anonymous sessions
-Remove auth proxy, get Traefik to do simple token-based auth.
 
 ## Drawbacks
 
@@ -231,19 +196,3 @@ requires more effort.
 
 However I believe that the payoff from enable native Rstudio sessions and even more importantly
 from making Amalthea and the notebook service more general is worth it.
-
-## Rationale and Alternatives
-
-> Why is this design the best in the space of possible designs?
-
-> What other designs have been considered and what is the rationale for not choosing them?
-
-> What is the impact of not doing this?
-
-## Unresolved questions
-
-> What parts of the design do you expect to resolve through the RFC process before this gets merged?
-
-> What parts of the design do you expect to resolve through the implementation of this feature before stabilisation?
-
-> What related issues do you consider out of scope for this RFC that could be addressed in the future independently of the solution that comes out of this RFC?
