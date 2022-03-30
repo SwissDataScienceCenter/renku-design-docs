@@ -163,10 +163,10 @@ classDiagram
     Activity --> Input : inputs
     Activity --> Output : outputs
     Activity --> FieldValue : parameters
-    FieldValue ..> Input 
-    FieldValue ..> Output
     Input --> InputField : field
     Output --> OutputField : field
+    Input ..> FieldValue
+    Output ..> FieldValue
     Activity --> Plan : base_plan
     Activity --> Plan : executed_plan
     Activity --> Activity : preceding_activities
