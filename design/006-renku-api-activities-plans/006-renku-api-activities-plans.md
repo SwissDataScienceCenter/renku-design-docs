@@ -44,22 +44,26 @@ properties.
 from renku.api import Activity
 
 all_activities = Activity.list()
-activities_by_usage = Activity.filter_by_usage(path="data/my.csv")
-activities_by_usage_parent = Activity.filter_by_usage(path="data/", exact=False)
-activities_by_generation = Activity.filter_by_generation(path="data/my.csv")
-activities_by_generation_parent = Activity.filter_by_generation(path="data/", with_children=True)
+activities_by_input = Activity.filter_by_input(path="data/my.csv")
+activities_by_input_parent = Activity.filter_by_input(path="data/", exact=False)
+activities_by_output = Activity.filter_by_output(path="data/my.csv")
+activities_by_output_parent = Activity.filter_by_output(path="data/", with_children=True)
 activities_by_parameter = Activity.filter_py_parameter(name="lr", value=0.7)
 ```
 
 `.list()` returns all activities in the project.
 
-`.filter_by_usage()` and `.filter_by_generation()` return all activities
+`.filter_by_input()` and `.filter_by_output()` return all activities
 that used a certain input or produced a certain output. Setting
 `with_children=True` means that if a directory is passed, all activities for
 that directory and its children are returned.
 
 `.filter_py_parameter()` filters activities based on parameters' names and/or
 values.
+
+Parameters `path`, `name` and `value` should accept plain values, list of
+values or a `Callable` accepting the value and returning a `bool`, to filter
+on a single value, list of values or custom condition, respectively.
 
 ```Python
 from renku.api import Plan
@@ -68,7 +72,7 @@ all_active_plans = Plan.list()
 deleted_plans = Plan.list(include_deleted=True)
 ```
 
-`.list()` returns all activities in the project. `include_deleted=True` would
+`.list()` returns all plans in the project. `include_deleted=True` would
 also return plans that were deleted.
 
 ```Python
@@ -98,22 +102,22 @@ status = Project().status()
 | ended_at     | ended_at_time    | datetime                       |
 | user         | agents (Person)  | string ('name (email)')        |
 | annotations  | annotations      | dict                           |
-| usages       | usages           | List[renku.api.Usage]          |
-| generations  | generations      | List[renku.api.Generation]     |
+| inputs       | usages           | List[renku.api.Input]          |
+| outputs      | generations      | List[renku.api.Output]         |
 | parameters   | parameters       | List[renku.api.ParameterValue] |
 | base_plan    | association.plan | renku.api.Plan                 |
 | executed_plan| plan_with_values | renku.api.Plan                 |
 | preceding_activities | lazy, through ActivityGateway | List[renku.api.Activity] |
 | following_activities | lazy, through ActivityGateway | List[renku.api.Activity] |
 
-##### Usage
+##### Input
 
 | API Property | Wrapped property | Type   |
 |--------------|------------------|--------|
 | checksum     | entity.checksum  | string |
 | path         | entity.path      | string |
 
-##### Generation
+##### Output
 
 | API Property | Wrapped property | Type   |
 |--------------|------------------|--------|
@@ -135,16 +139,16 @@ status = Project().status()
 | description   | description                | string                    |
 | date_created  | date_created               | datetime                  |
 | keywords      | keywords                   | List[string]              |
-| inputs        | inputs                     | List[renku.api.Input]     |
-| outputs       | outputs                    | List[renku.api.Output]    |
-| parameters    | parameters                 | List[renku.api.Parameter] |
+| input_fields  | inputs                     | List[renku.api.InputField]|
+| output_fields | outputs                    | List[renku.api.OutputField]|
+| parameter_fields | parameters                 | List[renku.api.ParameterField]|
 | command       | to_argv(with_streams=True) | string                    |
 | keywords      | keywords                   | List[string]              |
 | success_codes | success_codes              | List[int]                 |
 | deleted       | invalidated_at is not None | bool                      |
 | activities    | lazy, filter through ActivityGateway | List[renku.api.Activity] |
 
-##### Input
+##### InputField (formerly renku.api.Input)
 
 | API Property  | Wrapped property              | Type                      |
 |---------------|-------------------------------|---------------------------|
@@ -155,7 +159,7 @@ status = Project().status()
 | position      | position                      | int                       |
 | mapped_stream | mapped_to.stream_type         | string                    |
 
-##### Output
+##### OutputField (formerly renku.api.Output)
 
 | API Property  | Wrapped property              | Type                      |
 |---------------|-------------------------------|---------------------------|
@@ -166,7 +170,7 @@ status = Project().status()
 | position      | position                      | int                       |
 | mapped_stream | mapped_to.stream_type         | string                    |
 
-##### Parameter
+##### ParameterField  (formerly renku.api.Parameter)
 
 | API Property  | Wrapped property              | Type                      |
 |---------------|-------------------------------|---------------------------|
