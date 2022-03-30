@@ -80,7 +80,7 @@ classDiagram
         +bool deleted
         +List-renku_api_Activity activities
         +List-renku_api_Plan list()
-        
+
     }
     class InputField {
       +string name
@@ -88,7 +88,7 @@ classDiagram
       +string value
       +string prefix
       +int    position
-      +string mapped_stream  
+      +string mapped_stream
     }
     class OutputField {
       +string name
@@ -96,7 +96,7 @@ classDiagram
       +string value
       +string prefix
       +int    position
-      +string mapped_stream  
+      +string mapped_stream
     }
     class ParameterField {
       +string name
@@ -135,9 +135,9 @@ classDiagram
         +dict annotations
         +List-renku_api_Input inputs
         +List-renku_api_Output outputs
-        +List-renku_api_ParameterValue parameters
-        +renku_api_Plan base_plan      
-        +renku_api_Plan executed_plan  
+        +List-renku_api_ParameterValue parameter_values
+        +renku_api_Plan base_plan
+        +renku_api_Plan executed_plan
         +List-renku_api_Activity preceding_activities
         +List-renku_api_Activity following_activities
         +List-renku_api_Activity list()
@@ -154,20 +154,22 @@ classDiagram
       +string path
     }
     class ParameterValue {
-      +renku_api-Input_Output_Parameter parameter          
-      +Any value  
+      +renku_api-Input_Output_Parameter parameter
+      +Any value
     }
     Dataset --> DatasetFile : files
     Project --> ProjectStatus : status
     ProjectStatus --> Activity : stale_activities
     Activity --> Input : inputs
     Activity --> Output : outputs
-    Activity --> ParameterValue : parameters
+    Activity --> ParameterValue : parameter_values
     Activity --> Plan : base_plan
     Activity --> Plan : executed_plan
     Activity --> Activity : preceding_activities
     Activity --> Activity : following_activities
     ParameterValue --> ParameterField : parameter_field
+    ParameterValue --> InputField : parameter_field
+    ParameterValue --> OutputField : parameter_field
     Plan --> InputField : input_fields
     Plan --> OutputField : output_fields
     Plan --> ParameterField : parameters
@@ -180,7 +182,7 @@ classDiagram
     %% Mapping and Link connections have been hidden for imporved diagram readability
     %% Mapping --> Input : mapped_parameters
     %% Mapping --> Output : mapped_parameters
-    %% Mapping --> ParameterValue : mapped_parameters
+    %% Mapping --> ParameterField : mapped_parameters
     %% Link --> Output : source
     %% Link --> ParameterValue : source
     %% Link --> Input : sinks
