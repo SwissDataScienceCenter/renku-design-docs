@@ -239,6 +239,61 @@ status = Project().status()
 
 `.status()` returns
 
+### Viewing the Inputs, Outputs, and Parameters of Plans and Activities
+To see the names and default values of all the input, output, or parameters fields in a Plan:
+
+```python
+from renku.api import Plan
+
+all_active_plans = Plan.list()
+my_plan = all_active_plans[0]
+
+input_fields_list = my_plan.input_fields
+output_fields_list = my_plan.output_fields
+parameter_fields_list = my_plan.parameter_fields
+
+# print Input fields and their default values
+for input_field in input_fields_list:
+    print(f"{input_field.name}: {input_field.value})
+```
+
+
+
+And to see the input or output filepaths associated with an activity:
+
+```python
+from renku.api import Activity
+
+all_activities = Activity.list()
+my_activity = all_activities[0]
+
+input_files = my_activity.inputs
+output_files = my_activity.outputs
+for f in input_files:
+    print(f.path)
+
+parameters = my_Activity.parameters
+for p in parameters:
+    print(p.value)
+
+```
+
+To see the actual values that were specified for the input and output fields at the
+execution of the activity (the input & output _field values_ may be different from
+the input and output _paths_ if the fields were interpretted. For example, if an
+`OutputField` was set to `my_file_{yyyy-mm-dd}.txt`, then the value in the
+`Outputs` list would be `my_file_2022-03-30.txt`):
+
+```python
+from renku.api import Activity
+
+all_activities = Activity.list()
+my_activity = all_activities[0]
+executed_plan = my_activity.executed_plan
+# ??? what is the return value of `Activity.executed_plan`? 
+```
+
+
 ### Classes
 
 #### ProjectStatus
