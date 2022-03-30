@@ -154,7 +154,7 @@ classDiagram
       +string path
     }
     class FieldValue {
-      +renku_api-Input_Output_Parameter parameter
+      +renku_api-InputField_OutputField_ParameterField field
       +Any value
     }
     Dataset --> DatasetFile : files
@@ -163,17 +163,17 @@ classDiagram
     Activity --> Input : inputs
     Activity --> Output : outputs
     Activity --> FieldValue : parameters
-    FieldValue --> Input : parameter 
-    FieldValue --> Output : parameter
-    Input ..> InputField
-    Output ..> OutputField
+    FieldValue ..> Input 
+    FieldValue ..> Output
+    Input --> InputField : field
+    Output --> OutputField : field
     Activity --> Plan : base_plan
     Activity --> Plan : executed_plan
     Activity --> Activity : preceding_activities
     Activity --> Activity : following_activities
-    FieldValue ..> ParameterField
-    FieldValue ..> InputField
-    FieldValue ..> OutputField
+    FieldValue --> ParameterField : field
+    FieldValue --> InputField : field
+    FieldValue --> OutputField : field
     Plan --> InputField : input_fields
     Plan --> OutputField : output_fields
     Plan --> ParameterField : parameter_fields
@@ -270,11 +270,11 @@ my_activity = all_activities[0]
 input_files = my_activity.inputs
 output_files = my_activity.outputs
 for f in input_files:
-    print(f.path)
+    print(f"{f.field.name}: {f.path}")
 
 parameters = my_Activity.parameters
 for p in parameters:
-    print(p.value)
+    print(f"{p.field.name}: {p.value}")
 
 ```
 
