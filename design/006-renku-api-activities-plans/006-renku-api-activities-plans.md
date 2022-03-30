@@ -135,7 +135,7 @@ classDiagram
         +dict annotations
         +List-renku_api_Input inputs
         +List-renku_api_Output outputs
-        +List-renku_api_FieldValue field_values
+        +List-renku_api_FieldValue parameters
         +renku_api_Plan base_plan
         +renku_api_Plan executed_plan
         +List-renku_api_Activity preceding_activities
@@ -162,7 +162,7 @@ classDiagram
     ProjectStatus --> Activity : stale_activities
     Activity --> Input : inputs
     Activity --> Output : outputs
-    Activity --> FieldValue : field_values
+    Activity --> FieldValue : parameters
     FieldValue --> Input : parameter 
     FieldValue --> Output : parameter
     Input ..> InputField
