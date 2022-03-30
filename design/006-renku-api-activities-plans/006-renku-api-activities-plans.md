@@ -24,14 +24,14 @@ to then shell out to `renku workflow execute` to run Plans dynamically.
 Add new classes to `renku.api`:
 
 - Activity
+- Input
+- Output
+- FieldValue
+- Plan
+- CompositePlan
 - InputField
 - OutputField
 - ParameterField
-- Plan
-- CompositePlan
-- FieldValue
-- Input
-- Output
 - Mapping
 - Link
 
@@ -39,7 +39,7 @@ The classes wrap core renku classes and expose a simplified subset of
 properties.
 
 ### Class Diagram
-This diagram shows each class and the properties/methods that the user can use to navigate between the objects.
+This diagram shows each class and the properties/methods that the user can use to navigate between the objects, as indicated by the arrows. Dashed lines indicate relationships between classes that are not made available to the user, because they are not needed.
 
 _Note:_ The methods from `Mapping` and `Link` have been excluded from this diagram for the sake of readability, though they are included as comments in the diagram's code.
 
@@ -135,7 +135,7 @@ classDiagram
         +dict annotations
         +List-renku_api_Input inputs
         +List-renku_api_Output outputs
-        +List-renku_api_FieldValue parameter_values
+        +List-renku_api_FieldValue field_values
         +renku_api_Plan base_plan
         +renku_api_Plan executed_plan
         +List-renku_api_Activity preceding_activities
@@ -162,19 +162,21 @@ classDiagram
     ProjectStatus --> Activity : stale_activities
     Activity --> Input : inputs
     Activity --> Output : outputs
-    Activity --> FieldValue : parameter_values
+    Activity --> FieldValue : field_values
+    FieldValue --> Input : parameter 
+    FieldValue --> Output : parameter
+    Input ..> InputField
+    Output ..> OutputField
     Activity --> Plan : base_plan
     Activity --> Plan : executed_plan
     Activity --> Activity : preceding_activities
     Activity --> Activity : following_activities
-    FieldValue --> ParameterField : parameter_field
-    FieldValue --> InputField : parameter_field
-    FieldValue --> OutputField : parameter_field
-    Input --> FieldValue
-    Output --> FieldValue
+    FieldValue ..> ParameterField
+    FieldValue ..> InputField
+    FieldValue ..> OutputField
     Plan --> InputField : input_fields
     Plan --> OutputField : output_fields
-    Plan --> ParameterField : parameters
+    Plan --> ParameterField : parameter_fields
     Plan --> Activity : activities
     CompositePlan --> Plan : plans
     CompositePlan --> Mapping : mappings
