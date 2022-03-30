@@ -38,6 +38,156 @@ Add new classes to `renku.api`:
 The classes wrap core renku classes and expose a simplified subset of
 properties.
 
+### Class Diagram
+This diagram shows each class and the properties/methods that the user can use to navigate between the objects.
+
+_Note:_ The methods from `Mapping` and `Link` have been excluded from this diagram for the sake of readability, though they are included as comments in the diagram's code.
+
+```mermaid
+classDiagram
+    class Project{
+        +path path
+        +Client client
+        +ProjectStatus status()
+    }
+    class Dataset{
+        +List-DatasetFile files
+        +List-Dataset list()
+    }
+    class DatasetFile{
+        +datetime date_added
+        +string name
+        +path path
+        +unknown entity
+    }
+    class ProjectStatus{
+        +List-string             stale_outputs
+        +List-renku-api-Activity stale_activities
+        +List-string             modified_inputs
+        +List-string             deleted_inputs
+    }
+    class Plan{
+        +string name
+        +string description
+        +datetime date_created
+        +List-string keywords
+        +List-renku_api_InputField input_fields
+        +List-renku_api_OutputField output_fields
+        +List-renku_api_ParameterField parameter_fields
+        +string command
+        +List-string keywords
+        +List-int success_codes
+        +bool deleted
+        +List-renku_api_Activity activities
+        +List-renku_api_Plan list()
+        
+    }
+    class InputField {
+      +string name
+      +string description
+      +string value
+      +string prefix
+      +int    position
+      +string mapped_stream  
+    }
+    class OutputField {
+      +string name
+      +string description
+      +string value
+      +string prefix
+      +int    position
+      +string mapped_stream  
+    }
+    class ParameterField {
+      +string name
+      +string description
+      +string value
+      +string prefix
+      +int    position
+    }
+    class CompositePlan {
+        +string  name
+        +string  description
+        +datetime  date_created
+        +List-string keywords
+        +List-renku_api_Plan plans
+        +List-renku_api_Mapping mappings
+        +List-renku_api_Link links
+        +bool  deleted
+        +List-renku_api_Activity activities
+    }
+    class  Mapping {
+        <<Connections hidden for readability>>
+        + string name
+        + string description
+        + Path value
+        + renku_api-Input_Output_Parameter_Mappingparameters
+    }
+    class  Link {
+        <<Connections hidden for readability>>
+        +renku_api-Output_Parameter source
+        +List-renku_api-Input_Parameter sinks
+    }
+    class Activity {
+        +datetime started_at
+        +datetime ended_at
+        +string-name-email user
+        +dict annotations
+        +List-renku_api_Input inputs
+        +List-renku_api_Output outputs
+        +List-renku_api_ParameterValue parameters
+        +renku_api_Plan base_plan      
+        +renku_api_Plan executed_plan  
+        +List-renku_api_Activity preceding_activities
+        +List-renku_api_Activity following_activities
+        +List-renku_api_Activity list()
+        +List-renku_api_Activity filter_by_input()
+        +List-renku_api_Activity filter_by_output()
+        +List-renku_api_Activity filter_by_parameter()
+    }
+    class Input {
+      +string checksum
+      +string path
+    }
+    class Output {
+      +string checksum
+      +string path
+    }
+    class ParameterValue {
+      +renku_api-Input_Output_Parameter parameter          
+      +Any value  
+    }
+    Dataset --> DatasetFile : files
+    Project --> ProjectStatus : status
+    ProjectStatus --> Activity : stale_activities
+    Activity --> Input : inputs
+    Activity --> Output : outputs
+    Activity --> ParameterValue : parameters
+    Activity --> Plan : base_plan
+    Activity --> Plan : executed_plan
+    Activity --> Activity : preceding_activities
+    Activity --> Activity : following_activities
+    ParameterValue --> ParameterField : parameter_field
+    Plan --> InputField : input_fields
+    Plan --> OutputField : output_fields
+    Plan --> ParameterField : parameters
+    Plan --> Activity : activities
+    CompositePlan --> Plan : plans
+    CompositePlan --> Mapping : mappings
+    CompositePlan --> Link : links
+    CompositePlan --> Activity : activities
+
+    %% Mapping and Link connections have been hidden for imporved diagram readability
+    %% Mapping --> Input : mapped_parameters
+    %% Mapping --> Output : mapped_parameters
+    %% Mapping --> ParameterValue : mapped_parameters
+    %% Link --> Output : source
+    %% Link --> ParameterValue : source
+    %% Link --> Input : sinks
+    %% Link --> ParameterValue : sinks
+
+```
+
 ### Getting Activities and Plans
 
 ```Python
