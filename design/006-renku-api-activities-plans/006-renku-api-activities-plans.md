@@ -24,14 +24,14 @@ to then shell out to `renku workflow execute` to run Plans dynamically.
 Add new classes to `renku.api`:
 
 - Activity
-- Usage
-- Generation
-- ParameterValue
+- InputField
+- OutputField
+- ParameterField
 - Plan
 - CompositePlan
+- FieldValue
 - Input
 - Output
-- Parameter
 - Mapping
 - Link
 
@@ -135,7 +135,7 @@ classDiagram
         +dict annotations
         +List-renku_api_Input inputs
         +List-renku_api_Output outputs
-        +List-renku_api_ParameterValue parameter_values
+        +List-renku_api_FieldValue parameter_values
         +renku_api_Plan base_plan
         +renku_api_Plan executed_plan
         +List-renku_api_Activity preceding_activities
@@ -153,7 +153,7 @@ classDiagram
       +string checksum
       +string path
     }
-    class ParameterValue {
+    class FieldValue {
       +renku_api-Input_Output_Parameter parameter
       +Any value
     }
@@ -162,14 +162,16 @@ classDiagram
     ProjectStatus --> Activity : stale_activities
     Activity --> Input : inputs
     Activity --> Output : outputs
-    Activity --> ParameterValue : parameter_values
+    Activity --> FieldValue : parameter_values
     Activity --> Plan : base_plan
     Activity --> Plan : executed_plan
     Activity --> Activity : preceding_activities
     Activity --> Activity : following_activities
-    ParameterValue --> ParameterField : parameter_field
-    ParameterValue --> InputField : parameter_field
-    ParameterValue --> OutputField : parameter_field
+    FieldValue --> ParameterField : parameter_field
+    FieldValue --> InputField : parameter_field
+    FieldValue --> OutputField : parameter_field
+    Input --> FieldValue
+    Output --> FieldValue
     Plan --> InputField : input_fields
     Plan --> OutputField : output_fields
     Plan --> ParameterField : parameters
@@ -184,9 +186,9 @@ classDiagram
     %% Mapping --> Output : mapped_parameters
     %% Mapping --> ParameterField : mapped_parameters
     %% Link --> Output : source
-    %% Link --> ParameterValue : source
+    %% Link --> FieldValue : source
     %% Link --> Input : sinks
-    %% Link --> ParameterValue : sinks
+    %% Link --> FieldValue : sinks
 
 ```
 
@@ -256,7 +258,7 @@ status = Project().status()
 | annotations  | annotations      | dict                           |
 | inputs       | usages           | List[renku.api.Input]          |
 | outputs      | generations      | List[renku.api.Output]         |
-| parameters   | parameters       | List[renku.api.ParameterValue] |
+| parameters   | parameters       | List[renku.api.FieldValue] |
 | base_plan    | association.plan | renku.api.Plan                 |
 | executed_plan| plan_with_values | renku.api.Plan                 |
 | preceding_activities | lazy, through ActivityGateway | List[renku.api.Activity] |
@@ -276,7 +278,7 @@ status = Project().status()
 | checksum     | entity.checksum  | string |
 | path         | entity.path      | string |
 
-##### ParameterValue
+##### FieldValue
 
 | API Property | Wrapped property                                                           | Type                               |
 |--------------|----------------------------------------------------------------------------|------------------------------------|
