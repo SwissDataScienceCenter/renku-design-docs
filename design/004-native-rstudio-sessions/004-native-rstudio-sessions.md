@@ -73,7 +73,7 @@ graph TD
     B[Parse variables from k8s manifest]
     C[Parse patches from k8s manifest]
     C1[Read Jinja templates based on session type]
-    D[Render Jinja tempaltes to yaml]
+    D[Render Jinja templates to yaml]
     E[Patch yaml] 
     F[Create k8s resources]
     
@@ -99,9 +99,9 @@ graph TD
 - PVC for session storage
 
 ### Some of these assumptions will remain hardcoded
-- PVC/Storage, but expect the user to patch in volume mount
-- Ingress, keep as is point service to auth proxy
-- Authentication, keep as is port 4180 is only entry and it goes through the auth proxy
+- PVC/Storage: expect the user to patch in volume mount
+- Ingress: keep as is; point service to auth proxy
+- Authentication: keep as is; port 4180 is the only entry and it goes through the auth proxy
 
 ### Current manifest
 
@@ -162,13 +162,13 @@ spec:
       clientSecret:
         value: OidcSecretValue
       enabled: true
-      issuerUrl: https://dev.renku.ch/auth/realms/Renku
+      issuerUrl: https://<oidc-server>
     token: ""
   server:
     defaultUrl:
     image:
     resources:
-    rootDir: /home/jovyanl/work/<project_name>
+    rootDir: /home/jovyan
   routing:
     host: dev.renku.ch
     ingressAnnotations:
@@ -179,11 +179,11 @@ spec:
     path: /sessions/<session_name>
     tls:
       enabled: true
-      secretName: dev-renku-ch-tls
+      secretName: tls-secret
   storage:
     pvc:
       enabled:
-      mountPath: /home/jovyanl/work
+      mountPath: /home/jovyan
       storageClassName:
     size:
 ```
