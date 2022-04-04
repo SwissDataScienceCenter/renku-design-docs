@@ -39,7 +39,7 @@ The classes wrap core renku classes and expose a simplified subset of
 properties.
 
 ### Class Diagram
-This diagram shows each class and the properties/methods that the user can use to navigate between the objects, as indicated by the arrows. Dashed lines indicate relationships between classes that are not made available to the user, because they are not needed.
+This diagram shows each class and the properties/methods that the user can use to navigate between the objects, as indicated by the arrows. Dashed lines indicate logical relationships between classes that are not made available to the user.
 
 _Note:_ The methods from `Mapping` and `Link` have been excluded from this diagram for the sake of readability, though they are included as comments in the diagram's code.
 
@@ -121,12 +121,12 @@ classDiagram
         + string name
         + string description
         + Path value
-        + renku_api-Input_Output_Parameter_Mappingparameters
+        + renku_api-InputField_OutputField_ParameterField_Mapping parameters
     }
     class  Link {
         <<Connections hidden for readability>>
-        +renku_api-Output_Parameter source
-        +List-renku_api-Input_Parameter sinks
+        +renku_api-OutputField_ParameterField source
+        +List-renku_api-InputField_ParameterField sinks
     }
     class Activity {
         +datetime started_at
@@ -163,17 +163,17 @@ classDiagram
     Activity --> Input : inputs
     Activity --> Output : outputs
     Activity --> FieldValue : parameters
-    Input --> InputField : field
-    Output --> OutputField : field
+    Input ..> InputField
+    Output ..> OutputField
     Input ..> FieldValue
     Output ..> FieldValue
     Activity --> Plan : base_plan
     Activity --> Plan : executed_plan
     Activity --> Activity : preceding_activities
     Activity --> Activity : following_activities
-    FieldValue --> ParameterField : field
-    FieldValue --> InputField : field
-    FieldValue --> OutputField : field
+    FieldValue ..> ParameterField : field
+    FieldValue ..> InputField
+    FieldValue ..> OutputField
     Plan --> InputField : input_fields
     Plan --> OutputField : output_fields
     Plan --> ParameterField : parameter_fields
@@ -281,7 +281,7 @@ my_activity = all_activities[0]
 input_files = my_activity.inputs
 output_files = my_activity.outputs
 for f in input_files:
-    print(f"{f.field.name}: {f.path}")
+    print(f"{f.path}")
 
 parameters = my_Activity.parameters
 for p in parameters:
