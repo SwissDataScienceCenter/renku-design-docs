@@ -300,10 +300,9 @@ from renku.api import Activity
 
 all_activities = Activity.list()
 my_activity = all_activities[0]
-executed_plan = my_activity.executed_plan
-# ??? what is the return value of `Activity.executed_plan`?
+executed_command = my_activity.executed_command
+# "python myscript.py -p1=x --output=my-output"
 ```
-
 
 ### Classes
 
@@ -328,7 +327,7 @@ executed_plan = my_activity.executed_plan
 | outputs      | generations      | List[renku.api.Output]         |
 | parameters   | parameters       | List[renku.api.FieldValue] |
 | base_plan    | association.plan | renku.api.Plan                 |
-| executed_plan| plan_with_values | renku.api.Plan                 |
+| executed_plan| plan_with_values.to_argv() | string (full command) |
 | preceding_activities | lazy, through ActivityGateway | List[renku.api.Activity] |
 | following_activities | lazy, through ActivityGateway | List[renku.api.Activity] |
 
@@ -470,6 +469,12 @@ added complexity of having names diverging from `renku.core`
 Not implementing this would mean users have to shell out to renku and parse
 data from the CLI or call `renku.command` methods or gateways directly, which
 may change their interface and aren't easy to understand.
+
+
+It was also considered to return a plan with values applied from an activity,
+essentially `Activity.plan_with_values` from renku.core, but this was dropped
+in favor of just returning the argv string of the activity, to not
+overcomplicate things.
 
 ## Unresolved questions
 
