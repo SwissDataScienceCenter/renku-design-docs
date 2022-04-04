@@ -203,7 +203,7 @@ all_activities = Activity.list()
 activities_by_input = Activity.filter_by_input(path="data/my.csv")
 activities_by_input_parent = Activity.filter_by_input(path="data/", exact=False)
 activities_by_output = Activity.filter_by_output(path="data/my.csv")
-activities_by_output_parent = Activity.filter_by_output(path="data/", with_children=True)
+activities_by_output_parent = Activity.filter_by_output(path="data/", exact=True)
 activities_by_parameter = Activity.filter_py_parameter(name="lr", value=0.7)
 ```
 
@@ -225,7 +225,7 @@ on a single value, list of values or custom condition, respectively.
 from renku.api import Plan
 
 all_active_plans = Plan.list()
-deleted_plans = Plan.list(include_deleted=True)
+all_plans = Plan.list(include_deleted=True)
 ```
 
 `.list()` returns all plans in the project. `include_deleted=True` would
@@ -235,9 +235,13 @@ also return plans that were deleted.
 from renku.api import Project
 
 status = Project().status()
+status = Project().status(outputs=['my_output'])
 ```
 
-`.status()` returns
+`.status()` returns the current project status (`ProjectStatus`), detailing
+detailing stale outputs and activities as well as modified and deleted inputs
+that cause them to be stale. With `outputs` specified, limits status to those
+outputs and activities producing them.
 
 ### Viewing the Inputs, Outputs, and Parameters of Plans and Activities
 To see the names and default values of all the input, output, or parameters fields in a Plan:
@@ -290,7 +294,7 @@ from renku.api import Activity
 all_activities = Activity.list()
 my_activity = all_activities[0]
 executed_plan = my_activity.executed_plan
-# ??? what is the return value of `Activity.executed_plan`? 
+# ??? what is the return value of `Activity.executed_plan`?
 ```
 
 
@@ -339,7 +343,7 @@ executed_plan = my_activity.executed_plan
 
 | API Property | Wrapped property                                                           | Type                               |
 |--------------|----------------------------------------------------------------------------|------------------------------------|
-| parameter    | parent_activity.association.plan.(inputs,outputs,parameters)[parameter_id] | renku.api.(Input,Output,Parameter) |
+| field        | parent_activity.association.plan.(inputs,outputs,parameters)[parameter_id] | renku.api.(InputField,OutputField,ParameterField) |
 | value        | value                                                                      | Any                                |
 
 #### Plan
@@ -412,14 +416,14 @@ executed_plan = my_activity.executed_plan
 | name          | name                          | string                                     |
 | description   | description                   | string                                     |
 | value         | default_value or actual_value | Path                                       |
-| parameters    | mapped_parameters             | renku.api.(Input,Output,Parameter,Mapping) |
+| parameters    | mapped_parameters             | renku.api.(InputField,OutputField,ParameterField,Mapping) |
 
 ##### Link
 
 | API Property  | Wrapped property              | Type                                       |
 |---------------|-------------------------------|--------------------------------------------|
-| source        | source                        | renku.api.(Output,Parameter)               |
-| sinks         | sinks                         | List[renku.api.(Input,Parameter)]          |
+| source        | source                        | renku.api.(OutputField,ParameterField)               |
+| sinks         | sinks                         | List[renku.api.(InputField,ParameterField)]          |
 
 ## Drawbacks
 
