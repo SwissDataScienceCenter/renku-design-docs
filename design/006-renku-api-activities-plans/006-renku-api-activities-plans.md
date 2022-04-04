@@ -201,10 +201,17 @@ from renku.api import Activity
 
 all_activities = Activity.list()
 activities_by_input = Activity.filter_by_input(path="data/my.csv")
+activities_by_multiple_input = Activity.filter_by_input(path=["a.csv", "b.csv"])
+activities_by_filtered_input = Activity.filter_by_input(path=lambda p: p.endswith(".csv"))
 activities_by_input_parent = Activity.filter_by_input(path="data/", exact=False)
-activities_by_output = Activity.filter_by_output(path="data/my.csv")
-activities_by_output_parent = Activity.filter_by_output(path="data/", exact=True)
+activities_by_output = Activity.filter_by_output(path="data/my.csv", exact=True)
+activities_by_multiple_output = Activity.filter_by_output(path=["a.csv", "b.csv"])
+activities_by_filtered_output = Activity.filter_by_output(path=lambda p: p.endswith(".csv"))
+activities_by_output_parent = Activity.filter_by_output(path="data/", exact=False)
 activities_by_parameter = Activity.filter_py_parameter(name="lr", value=0.7)
+activities_by_multiple_parameter = Activity.filter_py_parameter(name=["lr", "e"], value=[0.7, 1.0])
+activities_by_filtered_parameter = Activity.filter_py_parameter(name=lambda n: n.startswith("lr."))
+activities_by_filtered_parameter = Activity.filter_py_parameter(name="lr", value=lambda v: v > 0.5)
 ```
 
 `.list()` returns all activities in the project.
