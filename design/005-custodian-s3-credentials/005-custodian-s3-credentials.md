@@ -57,3 +57,8 @@ so that the custodian can detect and authenticate the user.
 - It would be nice if the user could get some kind of feedback from this process.
 As it stands right now the user should just see the session "magically" appear in
 the renku UI after they click the link.
+- Do we need to support anonymous sessions? The assumptions so far has been no and
+I think it is best that it stays that way so that we keep things simple. If we wanted
+to support sessions started by users that are registered with the Custodian
+but not with Renku then things become a bit more complicated. Namely the Custodian
+would have to follow different flows for registered vs anonymous sessions.
