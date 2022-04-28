@@ -24,14 +24,14 @@ to then shell out to `renku workflow execute` to run Plans dynamically.
 Add new classes to `renku.api`:
 
 - Activity
-- Input
-- Output
+- UsedInput
+- CreatedOutput
 - FieldValue
 - Plan
 - CompositePlan
-- InputField
-- OutputField
-- ParameterField
+- Input
+- Output
+- Parameter
 - Mapping
 - Link
 
@@ -71,9 +71,9 @@ classDiagram
         +string description
         +datetime date_created
         +List-string keywords
-        +List-renku_api_InputField input_fields
-        +List-renku_api_OutputField output_fields
-        +List-renku_api_ParameterField parameter_fields
+        +List-renku_api_Input inputs
+        +List-renku_api_Output outputs
+        +List-renku_api_Parameter parameters
         +string command
         +List-string keywords
         +List-int success_codes
@@ -82,7 +82,7 @@ classDiagram
         +List-renku_api_Plan list()
 
     }
-    class InputField {
+    class Input {
       +string name
       +string description
       +string value
@@ -90,7 +90,7 @@ classDiagram
       +int    position
       +string mapped_stream
     }
-    class OutputField {
+    class Output {
       +string name
       +string description
       +string value
@@ -98,7 +98,7 @@ classDiagram
       +int    position
       +string mapped_stream
     }
-    class ParameterField {
+    class Parameter {
       +string name
       +string description
       +string value
@@ -121,20 +121,20 @@ classDiagram
         + string name
         + string description
         + Path value
-        + renku_api-InputField_OutputField_ParameterField_Mapping parameters
+        + renku_api-Input_Output_Parameter_Mapping parameters
     }
     class  Link {
         <<Connections hidden for readability>>
-        +renku_api-OutputField_ParameterField source
-        +List-renku_api-InputField_ParameterField sinks
+        +renku_api-Output_Parameter source
+        +List-renku_api-Input_Parameter sinks
     }
     class Activity {
         +datetime started_at
         +datetime ended_at
         +string-name-email user
         +dict annotations
-        +List-renku_api_Input inputs
-        +List-renku_api_Output outputs
+        +List-renku_api_UsedInput used_inputs
+        +List-renku_api_CreatedOutput created_outputs
         +List-renku_api_FieldValue parameters
         +renku_api_Plan base_plan
         +renku_api_Plan executed_plan
@@ -145,38 +145,38 @@ classDiagram
         +List-renku_api_Activity filter_by_output()
         +List-renku_api_Activity filter_by_parameter()
     }
-    class Input {
+    class UsedInput {
       +string checksum
       +string path
     }
-    class Output {
+    class CreatedOutput {
       +string checksum
       +string path
     }
     class FieldValue {
-      +renku_api-InputField_OutputField_ParameterField field
+      +renku_api-Input_Output_Parameter field
       +Any value
     }
     Dataset --> DatasetFile : files
     Project --> ProjectStatus : status
     ProjectStatus --> Activity : stale_activities
-    Activity --> Input : inputs
-    Activity --> Output : outputs
+    Activity --> UsedInput : used_inputs
+    Activity --> CreatedOutput : created_outputs
     Activity --> FieldValue : parameters
-    Input ..> InputField
-    Output ..> OutputField
-    Input ..> FieldValue
-    Output ..> FieldValue
+    UsedInput ..> Input
+    CreatedOutput ..> Output
+    UsedInput ..> FieldValue
+    CreatedOutput ..> FieldValue
     Activity --> Plan : base_plan
     Activity --> Plan : executed_plan
     Activity --> Activity : preceding_activities
     Activity --> Activity : following_activities
-    FieldValue ..> ParameterField : field
-    FieldValue ..> InputField
-    FieldValue ..> OutputField
-    Plan --> InputField : input_fields
-    Plan --> OutputField : output_fields
-    Plan --> ParameterField : parameter_fields
+    FieldValue ..> Parameter : field
+    FieldValue ..> Input
+    FieldValue ..> Output
+    Plan --> Input : inputs
+    Plan --> Output : outputs
+    Plan --> Parameter : parameters
     Plan --> Activity : activities
     CompositePlan --> Plan : plans
     CompositePlan --> Mapping : mappings
@@ -186,7 +186,7 @@ classDiagram
     %% Mapping and Link connections have been hidden for imporved diagram readability
     %% Mapping --> Input : mapped_parameters
     %% Mapping --> Output : mapped_parameters
-    %% Mapping --> ParameterField : mapped_parameters
+    %% Mapping --> Parameter : mapped_parameters
     %% Link --> Output : source
     %% Link --> FieldValue : source
     %% Link --> Input : sinks
@@ -259,12 +259,12 @@ from renku.api import Plan
 all_active_plans = Plan.list()
 my_plan = all_active_plans[0]
 
-input_fields_list = my_plan.input_fields
-output_fields_list = my_plan.output_fields
-parameter_fields_list = my_plan.parameter_fields
+inputs_list = my_plan.inputs
+outputs_list = my_plan.outputs
+parameters_list = my_plan.parameters
 
 # print Input fields and their default values
-for input_field in input_fields_list:
+for input_field in inputs_list:
     print(f"{input_field.name}: {input_field.value})
 ```
 
@@ -278,8 +278,8 @@ from renku.api import Activity
 all_activities = Activity.list()
 my_activity = all_activities[0]
 
-input_files = my_activity.inputs
-output_files = my_activity.outputs
+input_files = my_activity.used_inputs
+output_files = my_activity.created_outputs
 for f in input_files:
     print(f"{f.path}")
 
@@ -292,8 +292,8 @@ for p in parameters:
 To see the actual values that were specified for the input and output fields at the
 execution of the activity (the input & output _field values_ may be different from
 the input and output _paths_ if the fields were interpretted. For example, if an
-`OutputField` was set to `my_file_{yyyy-mm-dd}.txt`, then the value in the
-`Outputs` list would be `my_file_2022-03-30.txt`):
+`Output` was set to `my_file_{yyyy-mm-dd}.txt`, then the value in the
+`CreatedOutput` list would be `my_file_2022-03-30.txt`):
 
 ```python
 from renku.api import Activity
@@ -323,22 +323,22 @@ executed_command = my_activity.executed_command
 | ended_at     | ended_at_time    | datetime                       |
 | user         | agents (Person)  | string ('name (email)')        |
 | annotations  | annotations      | dict                           |
-| inputs       | usages           | List[renku.api.Input]          |
-| outputs      | generations      | List[renku.api.Output]         |
+| used_inputs  | usages           | List[renku.api.UsedInput]      |
+| created_outputs      | generations      | List[renku.api.CreatedOutput] |
 | parameters   | parameters       | List[renku.api.FieldValue] |
 | base_plan    | association.plan | renku.api.Plan                 |
-| executed_plan| plan_with_values.to_argv() | string (full command) |
+| executed_plan| plan_with_values.to_argv() | string (full command)|
 | preceding_activities | lazy, through ActivityGateway | List[renku.api.Activity] |
 | following_activities | lazy, through ActivityGateway | List[renku.api.Activity] |
 
-##### Input
+##### UsedInput
 
 | API Property | Wrapped property | Type   |
 |--------------|------------------|--------|
 | checksum     | entity.checksum  | string |
 | path         | entity.path      | string |
 
-##### Output
+##### CreatedOutput
 
 | API Property | Wrapped property | Type   |
 |--------------|------------------|--------|
@@ -349,7 +349,7 @@ executed_command = my_activity.executed_command
 
 | API Property | Wrapped property                                                           | Type                               |
 |--------------|----------------------------------------------------------------------------|------------------------------------|
-| field        | parent_activity.association.plan.(inputs,outputs,parameters)[parameter_id] | renku.api.(InputField,OutputField,ParameterField) |
+| field        | parent_activity.association.plan.(inputs,outputs,parameters)[parameter_id] | renku.api.(Input,Output,Parameter) |
 | value        | value                                                                      | Any                                |
 
 #### Plan
@@ -360,16 +360,16 @@ executed_command = my_activity.executed_command
 | description   | description                | string                    |
 | date_created  | date_created               | datetime                  |
 | keywords      | keywords                   | List[string]              |
-| input_fields  | inputs                     | List[renku.api.InputField]|
-| output_fields | outputs                    | List[renku.api.OutputField]|
-| parameter_fields | parameters                 | List[renku.api.ParameterField]|
+| inputs        | inputs                     | List[renku.api.Input]     |
+| outputs       | outputs                    | List[renku.api.Output]    |
+| parameters    | parameters                 | List[renku.api.Parameter] |
 | command       | to_argv(with_streams=True) | string                    |
 | keywords      | keywords                   | List[string]              |
 | success_codes | success_codes              | List[int]                 |
 | deleted       | invalidated_at is not None | bool                      |
 | activities    | lazy, filter through ActivityGateway | List[renku.api.Activity] |
 
-##### InputField (formerly renku.api.Input)
+##### Input
 
 | API Property  | Wrapped property              | Type                      |
 |---------------|-------------------------------|---------------------------|
@@ -380,7 +380,7 @@ executed_command = my_activity.executed_command
 | position      | position                      | int                       |
 | mapped_stream | mapped_to.stream_type         | string                    |
 
-##### OutputField (formerly renku.api.Output)
+##### Output
 
 | API Property  | Wrapped property              | Type                      |
 |---------------|-------------------------------|---------------------------|
@@ -391,7 +391,7 @@ executed_command = my_activity.executed_command
 | position      | position                      | int                       |
 | mapped_stream | mapped_to.stream_type         | string                    |
 
-##### ParameterField  (formerly renku.api.Parameter)
+##### Parameter
 
 | API Property  | Wrapped property              | Type                      |
 |---------------|-------------------------------|---------------------------|
@@ -422,14 +422,14 @@ executed_command = my_activity.executed_command
 | name          | name                          | string                                     |
 | description   | description                   | string                                     |
 | value         | default_value or actual_value | Path                                       |
-| parameters    | mapped_parameters             | renku.api.(InputField,OutputField,ParameterField,Mapping) |
+| parameters    | mapped_parameters             | renku.api.(Input,Output,Parameter,Mapping) |
 
 ##### Link
 
 | API Property  | Wrapped property              | Type                                       |
 |---------------|-------------------------------|--------------------------------------------|
-| source        | source                        | renku.api.(OutputField,ParameterField)               |
-| sinks         | sinks                         | List[renku.api.(InputField,ParameterField)]          |
+| source        | source                        | renku.api.(Output,Parameter)               |
+| sinks         | sinks                         | List[renku.api.(Input,Parameter)]          |
 
 ## Drawbacks
 
@@ -460,11 +460,6 @@ Activity.list(where="usages.path in 'data/my.csv' and started_at > '2022-01-01'"
 
 but that would add quite a bit of overhead in development time and force users
 to learn the DSL, adding cognitive overhead.
-
-I also considered renaming `usages` and `generations` on `Activity` to `inputs`
-and `outputs`, but that would be ambiguous with the use on `Plan` and I
-couldn't think of other names that are easier to understand, to be worth the
-added complexity of having names diverging from `renku.core`
 
 Not implementing this would mean users have to shell out to renku and parse
 data from the CLI or call `renku.command` methods or gateways directly, which
