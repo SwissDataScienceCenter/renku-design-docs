@@ -133,11 +133,35 @@ do for other functionality.
 
 ### Provider interface
 
-tbd
+If we adopt the view that data access should be done on the filesystem level,
+then one approach would be to rely on FUSE as the interface. This means using
+existing FUSE implementations where possible (e.g. S3) or implementing new ones
+using e.g. [`fusepy` library](https://github.com/fusepy/fusepy) or one of its
+recent forks.
+
+### Local vs. hosted interactive sessions
+
+Relying on FUSE for providing filesystem access to external resources means that
+locally we do not require special privileges and can manage the data access for
+the user. In the docker-based remote sessions, the situation is more complicated
+because containers require elevated privileges to access FUSE on the host.
+Therefore we will need to expose a microservice that will provide management of
+external data sources for the user. The renku CLI would be aware that it is
+running in a hosted session and instead of executing a local command for
+mounting the data source, it would send off an API request to the service. The
+service itself could run in a sidecar or be integrated with datashim (?), which
+is currently used for providing S3 buckets in interactive sessions. If done via
+a sidecar, we could likely achive dynamic mounting of data sources, which would
+be fantastic for data exploration.
 
 ### Commands
 
 #### Adding external data:
+
+The examples below are based on the existing `dataset` commands, but we might
+need to envision something new like `renku data source` which the `dataset`
+commands could reference.
+
 
 ```
 renku dataset add s3://server/path/to/bucket
@@ -203,8 +227,6 @@ to let Renku know about it:
 renku dataset stage --existing s3://server/path/to/<bucket>:/mounts/bucket
 ```
 
-In managed interactive sessions this should happen automatically.
-
 #### Streaming external data
 
 The renku-python API should offer some support for more easily accessing remote
@@ -217,7 +239,8 @@ resource is requested.
 * Relying on fuse is tricky because it requires elevated privileges on all
   systems. On linux, the user must have sudo and it isn't clear how this will
   work at all on windows. Fuse has the potentially to work very seamlessly but
-  can also cause problems.
+  can also cause problems. *EDIT*: this turns out not to be an issue; outside of
+  docker containers FUSE does not require additional privileges.
 
 * It might also be inefficient to keep track of which data is actually external
   when recording/handling workflows.
