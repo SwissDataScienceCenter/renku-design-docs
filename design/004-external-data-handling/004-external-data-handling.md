@@ -136,8 +136,8 @@ do for other functionality.
 If we adopt the view that data access should be done on the filesystem level,
 then one approach would be to rely on FUSE as the interface. This means using
 existing FUSE implementations where possible (e.g. S3) or implementing new ones
-using e.g. [`fusepy` library](https://github.com/fusepy/fusepy) or one of its
-recent forks.
+using e.g. [`python-fuse` library](https://github.com/libfuse/python-fuse).
+
 
 ### Local vs. hosted interactive sessions
 
