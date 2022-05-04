@@ -160,6 +160,9 @@ is currently used for providing S3 buckets in interactive sessions. If done via
 a sidecar, we could likely achive dynamic mounting of data sources, which would
 be fantastic for data exploration.
 
+Note that for NFS mounts, root is still required. A fuse-nfs project exists, but 
+elevated privileges are needed for non-root users in order to use it. 
+
 ### Commands
 
 #### Adding external data:
@@ -242,11 +245,16 @@ resource is requested.
 
 ## Drawbacks
 
-* Relying on fuse is tricky because it requires elevated privileges on all
-  systems. On linux, the user must have sudo and it isn't clear how this will
-  work at all on windows. Fuse has the potentially to work very seamlessly but
-  can also cause problems. *EDIT*: this turns out not to be an issue; outside of
-  docker containers FUSE does not require additional privileges.
+* Relying on FUSE is tricky because it requires elevated privileges on all
+  systems. On Linux, access to /etc/fuse and `CAP_SYS_ADMIN` is needed for fuse to work. 
+  NFS mounts usually require root privileges. 
+
+* In order for the mounts in interactive sessions to be dynamic, the sidecar container needs to use 
+  bi-directional mount propagation, which requires privileged mode. This solution 
+  might be unacceptable in some cases so we might need to consider dynamic mounting 
+  to be a feature that can be disabled. On the other hand, user namespaces seem
+  to be [coming to Kubernetes "soon"](https://github.com/kubernetes/enhancements/pull/3275)
+  in which case privilege escalation in containers will be less menacing. 
 
 * It might also be inefficient to keep track of which data is actually external
   when recording/handling workflows.
