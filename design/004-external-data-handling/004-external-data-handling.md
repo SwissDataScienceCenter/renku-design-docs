@@ -69,6 +69,12 @@ the data currently found in the remote location (this might take a while over
 the network - some data sources might provide pre-computed hashes). If the
 hashes differ, Renku offers to update the results.
 
+#### 3. Data storage for research project
+
+Willow is interested in a large, protected dataset that is offered for free to researchers by an external organization. She has to accept a data access agreement to access the data, at which points she receives credentials to the bucket. To explore the dataset, she creates a Renku project and mounts the S3 bucket using the credentials.
+
+After some exploration of the dataset, Willow decides to start a research project with the dataset. She makes a copy of the dataset in her own private S3 bucket for two reasons: (1) to make sure she maintains access to the data independent of the external organization, and (2) because she prefers to keep the project’s raw, intermediate, and final data products in the same place. She creates a Renku project for her work and mounts the bucket with her credentials. Throughout the research project, she reads the raw data from the mounted directory and saves intermediate data files and figures in separate folders in the same S3 bucket.
+
 ### Current status
 
 #### Git-LFS
