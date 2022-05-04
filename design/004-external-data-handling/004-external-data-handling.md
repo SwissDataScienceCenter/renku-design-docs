@@ -245,6 +245,9 @@ resource is requested.
 * It might also be inefficient to keep track of which data is actually external
   when recording/handling workflows.
 
+## Out of Scope
+* Saving credentials, so that RenkuLab users don't have to re-enter their credentials at the start of each session.
+
 ## Unresolved questions
 
 * It's not obvious what happens to git-LFS. Do we eventually support pushing
