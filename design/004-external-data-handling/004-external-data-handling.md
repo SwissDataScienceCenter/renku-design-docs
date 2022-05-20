@@ -91,7 +91,8 @@ the same S3 bucket.
 
 Sharing data in remote S3 buckets might not be only for large data that cannot
 be stored locally; in some cases it might be prudent to make local copies. Users
-frequently write their own supporting code for handling this.
+frequently write their own supporting code for handling this. One such use-case
+might look like this:
 
 ##### In the case where the data is small:
 
@@ -103,16 +104,23 @@ This way, the data is local and can be worked on in the context of the project.
 
 ##### In the case where the data is large:
 
-1. write a script to fetch the data and store it on an external drive or another filesystem
+1. write a script to fetch the data and store it on an external drive or another
+   filesystem
 2. add the script to git
-3. write scripts that reference the external drive/filesystem and reduce the data to a manageable size
+3. write scripts that reference the external drive/filesystem and reduce the
+   data to a manageable size
 4. add those scripts to git
-5. if the reduced data is very small, I will add it to git as well, if it is too large, I will put it in a gitignored subfolder
+5. if the reduced data is very small, I will add it to git as well, if it is too
+   large, I will put it in a gitignored subfolder
 
 In this case, if the project is cloned to a new computer or the external
 drive/filesystem is not available, the data can be fetched and reduced again
 easily.
 
+This approach leads to writing several one-off scripts and requires the user
+to handle the data orchestration manually. Renku could offer commands to do away
+with the boilerplate and ensure that data gets added/staged/mounted in a
+repeatable manner for all users/collaborators of the project.
 
 ### Use-cases
 
@@ -196,49 +204,158 @@ Generically, we should strive to remove the separation between "hosted" Renku
 Ideally we could once again follow the plug-in paradigm in the CLI, like we
 do for other functionality.
 
-### Provider interface
+### Provider interface and access modes
 
-If we adopt the view that data access should be done on the filesystem level,
-then one approach would be to rely on FUSE as the interface. This means using
-existing FUSE implementations where possible (e.g. S3) or implementing new ones
-using e.g. [`python-fuse` library](https://github.com/libfuse/python-fuse).
-It is not obvious that relying on FUSE is a good idea at all -- we need to conduct
-a study of pros/cons before committing to this path. There might be cases where
-FUSE would not be universally acceptable - there, we should offer the option to
-use an alternative, e.g. copy instead of stream the data.
+For each "provider", Renku should enable the user to copy data into a location
+on disk as the default. For many use-cases, this would be sufficient. In cases
+where large data is being used, additional options need to be considered.
 
-The interface should rely on a `DataSource` entity type. The role of the
+Providers can leverage the well-supported
+[fsspec](https://filesystem-spec.readthedocs.io/en/latest/index.html) or
+[pyfilesystem](https://github.com/PyFilesystem/pyfilesystem2) libraries (though
+see [this
+discussion](https://filesystem-spec.readthedocs.io/en/latest/intro.html#other-similar-work)
+contrasting the two). The interface should rely on a `DataSource` entity type
+(or similar) that can be persisted in the knowledge graph. The role of the
 Provider is to configure the project and/or the user's environment in such a way
 as to make the `DataSource` available in a consistent, repeatable location with
 respect to the project and without boilerplate.
+
+Three scenarios are described here where a provider should ease the access to
+external data _and_ work with Renku internals to record information about
+provenance in the knowledge graph.
+
+#### Mode 1 (default): copy
+
+The default behavior of the CLI when staging the data locally (i.e. not on a
+Renkulab instance) should be to copy the data into the project. When disk space
+considerations allow it, this is preferred because data access will (almost)
+always be faster than over the network. The user should
+
+#### Mode 2: mount
+
+For large data that cannot be copied, providing a local mount is an option if we
+adopt the view that data access should be done on the filesystem level. In this
+case we must rely on
+[FUSE](https://en.wikipedia.org/wiki/Filesystem_in_Userspace). `fsspec` (see
+above) can use FUSE directly for many of the filesystem implementations. If a
+new implementation is needed, the most sustainable way forward would likely be
+to define an `fsspec` filesystem and FUSE mount it. It is not obvious that
+relying on FUSE is a good idea at all -- we need to conduct a study of pros/cons
+before committing to this path. There might be cases where FUSE would not be
+universally acceptable - there, we should offer the option to use an
+alternative, e.g. copy instead of stream the data.
+
+#### Mode 3: reference
+
+An alternative to using FUSE for large data would be to define data references
+that would never be instantiated on disk, but only passed to Renku for recording
+in the metadata. The user would be responsible for accessing the data with
+whatever means necessary in their code; depending on the storage backend, Renku
+could store checksums such that e.g. `renku status` could query the remote
+source for any changes to the data. This approach wouldn't be too unlike the
+current `--external` flag to `dataset add`, with the difference that there would
+be nothing visible in the project's directory tree at all (using `--external`
+makes a symlink). `fsspec` can be used here again to verify the metadata of the
+resource with the storage backend. This is related to [renku-python
+#2861](https://github.com/SwissDataScienceCenter/renku-python/issues/2861). When
+working with references, another relevant library might be
+[smart_open](https://github.com/RaRe-Technologies/smart_open) which provides an
+interface for streaming large files from a variety of backends. In this case,
+Renku could offer a utility (at least in the API) to provide access to remote
+resources easily.
 
 ### Local vs. hosted interactive sessions
 
 Relying on FUSE for providing filesystem access to external resources means that
 locally we do not require special privileges and can manage the data access for
-the user. In the docker-based remote sessions, the situation is more complicated
-because containers require elevated privileges to access FUSE on the host.
-Therefore we will need to expose a microservice that will provide management of
-external data sources for the user. The renku CLI would be aware that it is
-running in a hosted session and instead of executing a local command for
-mounting the data source, it would send off an API request to the service. The
-service itself could run in a sidecar or be integrated with datashim, which
-is currently used for providing S3 buckets in interactive sessions. If done via
-a sidecar, we could likely achive dynamic mounting of data sources, which would
-be fantastic for data exploration but comes with security trade-offs (sidecar needs
-to run with elevated privileges).
+the user, provided they are able to install and use FUSE on their system. In the
+docker-based remote sessions, the situation is more complicated because
+containers require elevated privileges to access FUSE on the host. Therefore we
+will need to expose a microservice that will provide management of external data
+sources for the user. The renku CLI would be aware that it is running in a
+hosted session and instead of executing a local command for mounting the data
+source, it would send off an API request to the service. The service itself
+could run in a sidecar or be integrated with datashim, which is currently used
+for providing S3 buckets in interactive sessions. If done via a sidecar, we
+could likely achive dynamic mounting of data sources, which would be fantastic
+for data exploration but comes with security trade-offs (sidecar needs to run
+with elevated privileges). Note that for NFS mounts, _root is still required_. A
+fuse-nfs project exists, but elevated privileges are needed for non-root users
+in order to use it.
 
-Note that for NFS mounts, _root is still required_. A fuse-nfs project exists, but
-elevated privileges are needed for non-root users in order to use it.
+Because of the security considerations, dynamic mounting needs to be a feature
+that can be turned off in more restrictive environments. The alternative that
+will be provided is to mount volumes at the start of the user session, requiring
+a restart if a new volume is needed. That way, an entirely separate service can
+handle the volume provisioining, as is the case now with the current
+implementation of S3 buckets.
+
 
 ### Commands
 
-#### Adding external data to Renku Datasets
+Below are some examples of potential usage of external data with existing and
+new `renku` commands.
 
-The examples below are based on the existing `dataset` commands.
+There are a few situations to consider. In all cases the data referenced from
+external storage should be trackable through renku workflows and the Renku API
+should offer utilities to access that data.
+
+1. External (raw) data exists in some external location and it would be useful
+   to bring it to Renku and annotate it in the context of a Renku dataset. The
+   difference with current functionality is that the user does not want to add
+   this data to git-LFS.
+
+2. A Renku dataset is created but instead of using git-LFS it should be backed
+   by another external data store (perhaps for easier access from other
+   systems). This means that _local_ data will be added to the dataset and
+   (eventually) sent to the remote storage.
+
+3. External data is brought into the project but _not_ in the context of a
+   dataset (that could be done at a later point). Renku should remember that
+   this data has been brought into the project so that other users of the
+   project can also easily stage it when needed. As above, the data should _not_
+   be pushed to git-LFS but instead kept on the remote resource.
+
+In all three of these cases, at least two of the access modes described in the
+previous section should be accommodated, namely "copy" and "mount". In the case
+of datasets, it's not clear how "reference" is to be used; however, it doesn't
+seem contradictory to organize data references in a dataset and make them
+accessible via Renku's `Dataset` API.
+
+Note: in the commands below `s3://` is used as an example but all of the support
+libraries referred to above support common APIs for (nearly) all likely storage
+backends and automatically switch between them depending on the protocol of the
+URL. That's a long way of saying that one can replace `s3://` with `hdfs://`,
+`nfs://` or `gcs://` etc.
+
+#### Creating a Renku dataset backed by external storage
 
 ```
-renku dataset add --create very-large-data s3://server/path/to/bucket
+renku dataset create s3-backed-dataset --storage s3://server/path/to/bucket
+```
+
+This command creates a dataset and sets its backing storage to be S3 instead of
+the default git-LFS. Locally, the directory `data/s3-backed-dataset` is created
+and added to `.gitignore`.
+
+```
+renku dataset add s3-backed-dataset /path/to/file/on/filesystem
+```
+
+This adds a file from the local filesystem to the dataset. It is _copied_ to
+`data/s3-backed-dataset`. (Should it also be pushed to the remote storage
+immediately?)
+
+#### Adding external data to a Renku Dataset
+
+This situation is different than the previous one in that remote data already
+exists but the user wants to bring it into a Renku context. The usual `renku
+dataset add` is used but Renku interprets the `s3://` URL and automatically
+registers it as an external dataset:
+
+```
+renku dataset add --create external-dataset s3://server/path/to/bucket
 -- prompt --
 Access Key: 1234
 Secret Key: abcd
@@ -247,29 +364,31 @@ Store credentials? (y/N): y
 Credentials stored in ~/.renku/renku.ini
 ```
 
-On the filesystem, the user would see `data/mydataset` as is normal for Renku
-datasets. Importantly, `data/mydataset` is also added to `.gitignore` to avoid
+On the filesystem, the command creates `data/external-dataset` as is normal for Renku
+datasets. Importantly, `data/external-dataset` is also added to `.gitignore` to avoid
 exploding the git repository. 💥
 
-`s3://` is used here but we should also support at least `nfs://`. Renku should
-ask for credentials in a way that is appropriate for the type of resource that
-is being added.
+Note that by adding the data, only the metadata objects are created, the data is
+not actually staged yet.
 
 #### Getting information about the dataset:
 
 ```
-renku dataset show very-large-data
+renku dataset show external-dataset
 -- output --
-Name: very-large-data
+Name: external-dataset
 Created: 2022-03-30 15:55:59+02:00
 Creator(s): Rok Roškar <rok.roskar@sdsc.ethz.ch>
-Title: very-large-data
+Title: external-dataset
 Description: Data that is very large. Indeed.
 Data Sources:
     - type: s3
       url: s3://server/path/to/bucket
       location: None
 ```
+
+Note that `location: None` because the dataset has not been staged yet. See
+below for details on that.
 
 #### Staging external data:
 
@@ -278,57 +397,66 @@ This seems to be a "staging" operation, but we could also call it something
 else. "Mounting" is another option but seems too linux-specific.
 
 ```
-renku dataset stage very-large-data
+renku dataset stage external-dataset
 ```
 
-This command uses Fuse when necessary to mount data locally. The command should
-default to mounting the remote filesystem, but should give the option to copy, e.g.
+This command copies by default. If the user wants to avoid copying and stage by
+mounting, FUSE can be used. For some filesystems we might be able to warn the
+user that the data they are trying to stage is very big and they should use the
+`--no-copy` flag instead.
 
 ```
-renku dataset stage --copy very-large-data
+renku dataset stage --no-copy external-dataset
 ```
 
-The default location is to be `.renku/mounts/<name>` but can be specified with
-the `--location` flag in case it is preferred to take the data to an external
-drive or another filesystem.
+The default location is `data/<dataset-name>` but can be specified with the
+`--location` flag in case it is preferred to take the data to an external drive
+or another filesystem - in that case, the data is linked to
+`data/<dataset-name>`. For example:
+
+```
+renku dataset stage --location /scratch/ external-dataset
+```
+
+would result in `/scratch/external-dataset` --> `data/external-dataset`.
 
 Once it's staged, it can be found locally and used in workflows:
 
 ```
-renku dataset show very-large-data
+renku dataset show external-dataset
 
-Name: very-large-data
+Name: external-dataset
 Created: 2022-03-30 15:55:59+02:00
 Creator(s): Rok Roškar <rok.roskar@sdsc.ethz.ch>
-Title: very-large-data
+Title: external-dataset
 Description: Data that is very large. Indeed.
 External Sources:
     - type: s3
       url: s3://server/path/to/<bucket>
-      location: .renku/mounts/<bucket>
+      location: /scratch/external-dataset
 ```
 
-The data is accessible under `data/very-large-data/<bucket>` in the project's directory.
+The data is accessible under `data/external-dataset/<bucket>` in the project's directory.
 
 If the data is already mounted by some other means, `dataset stage` can be used
 to let Renku know about it:
 
 ```
-renku dataset stage --existing s3://server/path/to/<bucket>:/mounts/bucket
+renku dataset stage --existing /mounts/bucket s3://server/path/to/<bucket>
 ```
 
 #### Using external data _without_ Renku datasets
 
 We should also consider the case where creating a dataset is too much effort or
-does not fit the stage of the project. In such cases, Renku should allow the
-user to bring in and reference external data. For this, we should review the
+does not fit the stage of the project. In such cases, Renku should still allow
+the user to bring in and reference external data. For this, we should review the
 existing `storage` subcommand. For example, to bring in data from an S3 bucket,
 the user would do
 
 ```
-renku storage add s3://server/path/to/<bucket>
+renku storage add s3-bucket s3://server/path/to/<bucket>
 -- output --
-<bucket> added as external storage
+s3-bucket added as external storage
 ```
 
 This would not immediately do anything with the data, but only create the
@@ -336,22 +464,19 @@ This would not immediately do anything with the data, but only create the
 to do
 
 ```
-renku storage stage --copy <bucket> path/to/bucket
+renku storage stage s3-bucket path/to/bucket
 ```
 
-The filesystem then looks like
-
-```
-.renku/mounts/<bucket>
-path/to/bucket --> .renku/mounts/<bucket>
-```
-
-The `path/to/bucket` is in `.gitignore`.
+The `--copy/--no-copy` semantics are the same as in the `dataset` commands
+above. The `path/to/bucket` is entered in `.gitignore`. If the `--no-copy` flag
+is used, the data is mounted instead of copied. Same as above, the `--location`
+flag can also be used to specify a different location for staging the data,
+which is then linked to `path/to/bucket`.
 
 The above can be condensed in
 
 ```
-renku storage add --copy --to path/to/bucket s3://server/path/to/<bucket>
+renku storage add s3-bucket --to path/to/bucket s3://server/path/to/<bucket>
 ```
 
 This is stored in the metadata so when the project is cloned elsewhere, the
@@ -360,16 +485,16 @@ relative location of the data is fixed. So, e.g.
 ```
 renku storage ls
 -- output --
-Type |             URL              |        Location        |  Project path
--------------------------------------------------------------------------------
-S3   | s3://server/path/to/<bucket> | .renku/mounts/<bucket> | path/to/<bucket>
+Type |    Name   |              URL              |        Location        |  Project path
+--------------------------------------------------------------------------------------------
+S3   | s3-bucket |  s3://server/path/to/<bucket> | .renku/mounts/<bucket> | path/to/<bucket>
 ```
 
 To quickly get access to all of the external data when cloning the project
-in a new location, the user can easily mount/copy all the known remote data sources:
+in a new location, the user can easily copy/mount all the known remote data sources:
 
 ```
-renku storage stage --all --copy
+renku storage stage --all
 ```
 
 Note that in the case of remote storage (as opposed to datasets) there is no
@@ -385,12 +510,14 @@ The renku-python API should offer some support for more easily accessing remote
 data, especially for sources from which it is common for data to be processed as
 a stream. Ideally, Renku could lazily stage the external data if access to the
 resource is requested.
+[smart_open](https://github.com/RaRe-Technologies/smart_open) might be useful
+for this.
 
 ## Drawbacks
 
 * Relying on FUSE is tricky because it requires elevated privileges on all
-  systems. On Linux, access to /etc/fuse and `CAP_SYS_ADMIN` is needed for fuse to work.
-  NFS mounts usually require root privileges.
+  systems. On Linux, access to `/dev/fuse` and `CAP_SYS_ADMIN` in Docker is
+  needed for fuse to work. NFS mounts usually require root privileges.
 
 * In order for the mounts in interactive sessions to be dynamic, the sidecar
   container needs to use bi-directional mount propagation, which requires
@@ -400,8 +527,8 @@ resource is requested.
   "soon"](https://github.com/kubernetes/enhancements/pull/3275) in which case
   privilege escalation in containers will be less menacing.
 
-* It might also be inefficient to keep track of which data is actually external
-  when recording/handling workflows.
+* Unclear how to keep track of which data is actually external when
+  recording/handling workflows.
 
 ## Out of Scope
 * Saving credentials, so that RenkuLab users don't have to re-enter their
@@ -419,3 +546,16 @@ resource is requested.
 * Syncing data to a remote location sounds an awful lot like needing to
   implement version control on top of data files - there might be some
   alternatives to this already.
+
+* When syncing data with the remote location, how should potential conflicts be
+  resolved? On shared infrastructures it's usually not the infrastructure
+  provider's role to ensure that users aren't overwriting each other's data if
+  using a shared filesystem, but maybe we need to at least try to have some
+  sanity checks?
+
+* On `renku dataset stage` should Renku check the checksums of the staged data
+  and compare them with local checksums? This seems especially pertinent if
+  Renku is pointed at an existing location for a dataset.
+
+* It would be nice to have some filtering on the remote data - should that be in
+  scope here?
