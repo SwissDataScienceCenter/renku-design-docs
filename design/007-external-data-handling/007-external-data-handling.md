@@ -195,6 +195,46 @@ openBIS etc. From the user's perspective, they all will generally work in the
 same way as S3; data will be mounted to a local directory outside the repository
 and made accessible as network-mounted storage.
 
+### Related Work
+
+The following section describes how similar tools handle external data.
+
+#### DVC - uses copying and file links
+
+DVC supports [importing data](https://dvc.org/doc/use-cases/data-registry#data-import-workflow)
+from external sources. When doing so, DVC saves dependency metadata about that data source.
+
+DVC supports storing data in and retrieving data from a [remote
+](https://dvc.org/doc/start/data-management#storing-and-sharing).
+Data is copied between the local file system and the remote via explicit push
+and pull commands.
+
+If data is too big for the local file system, DVC supports using an [external
+cache](https://dvc.org/doc/command-reference/add#example-transfer-to-an-external-cache).
+The external cache works via file links.
+
+#### Snakemake - uses copying
+
+Snakemake supports the use of remote files within pipelines.
+When a file is needed for a pipeline execution, it is copied to the local file system.
+
+From the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/snakefiles/remote_files.html):
+
+> During rule execution, a remote file (or object) specified is downloaded to the
+>  local cwd, within a sub-directory bearing the same name as the remote provider.
+>  ... You can think of each local remote sub-directory as a local mirror of the
+>   remote system. 
+
+#### Kedro - uses programmatic access
+
+Kedro's data access is based on configuration files ([Data Catalog](https://kedro.readthedocs.io/en/stable/data/data_catalog.html#the-data-catalog)).
+In the configuration, kedro uses [fsspec](https://kedro.readthedocs.io/en/stable/data/data_catalog.html#specifying-the-location-of-the-dataset)
+to provide a standardized interface to remote data systems.
+Since kedro is python only, data is accessed programatically.
+In other words, the units of kedro workflows are python functions that take as
+input live python objects (dataframes, etc.), not file paths. fsspec helps map
+a variety of remote data locations to live python objects.
+
 ## Design Detail
 
 Generically, we should strive to remove the separation between "hosted" Renku
