@@ -23,9 +23,102 @@ provenance of external data; Renku should preserve the information about the
 original source of the data and provide mechanisms to retrieve this data when
 necessary.
 
-### User stories
+## Current status
 
-#### 1. Sharing data for ad-hoc analysis
+### Git-LFS
+
+The Renku CLI uses git-LFS to store data alongside code in a repository. This is
+pretty convenient because it allows us to use usual git semantics with data,
+which means it can automatically be versioned and treated like other files in
+the repository. The data normally gets pushed to a separate server, in this case
+an object store configured alongside the GitLab server. However, it could be any
+server supporting the git-LFS protocol. The Renku CLI includes git hooks that
+prevent users a) from pushing data as normal git objects (which typically breaks
+repositories), as well as b) from pushing normal code files (e.g. notebooks) into
+git-LFS when not needed. This works fairly well but it is brittle - it's very
+easy for users to misconfigure their repository and break repositories, even
+when well-trained and well-intentioned.
+
+An additional drawback of this approach is that data is currently always fetched
+from the git-LFS object store whenever a repository is cloned. For some projects
+this results in very long launch times for interactive sessions on renkulab.
+
+### "External" dataset data
+
+The Renku CLI dataset functionality supports adding data from the filesystem
+that is outside of the repository. For example
+
+```shell
+renku dataset add --external ../../path/to/my/data
+```
+
+The path to the data is stored in the dataset's metadata; the pointer can also
+be updated in case that the data changes and the hash needs to be recomputed,
+for the purposes of reproducibility. Of course, the obvious drawback here is
+that the data location is arbitrary - if the project is brought to another
+environment/machine/cluster, it's fairly likely that the data path will be
+incorrect and therefore all recorded workflows will fail.
+
+### S3
+
+Using S3 in Renku is currently limited to interactive sessions. When launching a
+session, users can specify any S3-compatible URL together with credentials, if
+necessary. The S3 bucket is then mounted in their interactive session.
+Currently, no metadata about these mounts is recorded. The data could, in
+principle, be added to a renku dataset with the "external" mechanism described
+above, but no metadata about its actual origins (i.e. an S3 bucket) would be
+recorded.
+
+### Upcoming
+
+We have plans to include other external data providers, such as NFS shares,
+openBIS etc. From the user's perspective, they all will generally work in the
+same way as S3; data will be mounted inside the project and made accessible as
+network-mounted storage.
+
+## Related Work
+
+The following section describes how similar tools handle external data.
+
+### DVC - uses copying and file links
+
+DVC supports [importing data](https://dvc.org/doc/use-cases/data-registry#data-import-workflow)
+from external sources. When doing so, DVC saves dependency metadata about that data source.
+
+DVC supports storing data in and retrieving data from a [remote
+](https://dvc.org/doc/start/data-management#storing-and-sharing).
+Data is copied between the local file system and the remote via explicit push
+and pull commands.
+
+If data is too big for the local file system, DVC supports using an [external
+cache](https://dvc.org/doc/command-reference/add#example-transfer-to-an-external-cache).
+The external cache works via file links.
+
+### Snakemake - uses copying
+
+Snakemake supports the use of remote files within pipelines.
+When a file is needed for a pipeline execution, it is copied to the local file system.
+
+From the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/snakefiles/remote_files.html):
+
+> During rule execution, a remote file (or object) specified is downloaded to the
+>  local cwd, within a sub-directory bearing the same name as the remote provider.
+>  ... You can think of each local remote sub-directory as a local mirror of the
+>   remote system.
+
+### Kedro - uses programmatic access
+
+Kedro's data access is based on configuration files ([Data Catalog](https://kedro.readthedocs.io/en/stable/data/data_catalog.html#the-data-catalog)).
+In the configuration, kedro uses [fsspec](https://kedro.readthedocs.io/en/stable/data/data_catalog.html#specifying-the-location-of-the-dataset)
+to provide a standardized interface to remote data systems.
+Since kedro is python only, data is accessed programatically.
+In other words, the units of kedro workflows are python functions that take as
+input live python objects (dataframes, etc.), not file paths. fsspec helps map
+a variety of remote data locations to live python objects.
+
+## User stories
+
+### 1. Sharing data for ad-hoc analysis
 
 This example uses S3 but it could be nearly identical with e.g. an institutional
 NFS server or something like openBIS.
@@ -57,7 +150,7 @@ it is available in the same location in the project as it was before on Bob's
 personal laptop.
 
 
-#### 2. Tracking the use of external data
+### 2. Tracking the use of external data
 
 Sally is Bob's collaborator who continues to build on Bob's initial work by
 building a more robust workflow. She uses standard Renku commands to record the
@@ -69,7 +162,7 @@ the data currently found in the remote location (this might take a while over
 the network - some data sources might provide pre-computed hashes). If the
 hashes differ, Renku offers to update the results.
 
-#### 3. Data storage for research project
+### 3. Data storage for research project
 
 Willow is interested in a large, protected dataset that is offered for free to
 researchers by an external organization. She has to accept a data access
@@ -87,14 +180,14 @@ Throughout the research project, she reads the raw data from the mounted
 directory and saves intermediate data files and figures in separate folders in
 the same S3 bucket.
 
-#### 4. Access remote data but make local copies
+### 4. Access remote data but make local copies
 
 Sharing data in remote S3 buckets might not be only for large data that cannot
 be stored locally; in some cases it might be prudent to make local copies. Users
 frequently write their own supporting code for handling this. One such use-case
 might look like this:
 
-##### In the case where the data is small:
+#### In the case where the data is small:
 
 1. write a script to fetch the data and store it in a subfolder of the project
 2. add the script to git
@@ -102,7 +195,7 @@ might look like this:
 
 This way, the data is local and can be worked on in the context of the project.
 
-##### In the case where the data is large:
+#### In the case where the data is large:
 
 1. write a script to fetch the data and store it on an external drive or another
    filesystem
@@ -122,7 +215,7 @@ to handle the data orchestration manually. Renku could offer commands to do away
 with the boilerplate and ensure that data gets added/staged/mounted in a
 repeatable manner for all users/collaborators of the project.
 
-### Use-cases
+## Use-cases
 
 From the user stories, two primary high-level use-cases emerge:
 
@@ -140,100 +233,6 @@ and re-executing workflows as they are outside of git.
 
 The second option is an extension of the first one. I.e. you define a data
 source but then select certain parts from it to make local copies.
-
-
-### Current status
-
-#### Git-LFS
-
-The Renku CLI uses git-LFS to store data alongside code in a repository. This is
-pretty convenient because it allows us to use usual git semantics with data,
-which means it can automatically be versioned and treated like other files in
-the repository. The data normally gets pushed to a separate server, in this case
-an object store configured alongside the GitLab server. However, it could be any
-server supporting the git-LFS protocol. The Renku CLI includes git hooks that
-prevent users a) from pushing data as normal git objects (which typically breaks
-repositories), as well as b) from pushing normal code files (e.g. notebooks) into
-git-LFS when not needed. This works fairly well but it is brittle - it's very
-easy for users to misconfigure their repository and break repositories, even
-when well-trained and well-intentioned.
-
-An additional drawback of this approach is that data is currently always fetched
-from the git-LFS object store whenever a repository is cloned. For some projects
-this results in very long launch times for interactive sessions on renkulab.
-
-#### "External" dataset data
-
-The Renku CLI dataset functionality supports adding data from the filesystem
-that is outside of the repository. For example
-
-```shell
-renku dataset add --external ../../path/to/my/data
-```
-
-The path to the data is stored in the dataset's metadata; the pointer can also
-be updated in case that the data changes and the hash needs to be recomputed,
-for the purposes of reproducibility. Of course, the obvious drawback here is
-that the data location is arbitrary - if the project is brought to another
-environment/machine/cluster, it's fairly likely that the data path will be
-incorrect and therefore all recorded workflows will fail.
-
-#### S3
-
-Using S3 in Renku is currently limited to interactive sessions. When launching a
-session, users can specify any S3-compatible URL together with credentials, if
-necessary. The S3 bucket is then mounted in their interactive session.
-Currently, no metadata about these mounts is recorded. The data could, in
-principle, be added to a renku dataset with the "external" mechanism described
-above, but no metadata about its actual origins (i.e. an S3 bucket) would be
-recorded.
-
-#### Upcoming
-
-We have plans to include other external data providers, such as NFS shares,
-openBIS etc. From the user's perspective, they all will generally work in the
-same way as S3; data will be mounted to a local directory outside the repository
-and made accessible as network-mounted storage.
-
-### Related Work
-
-The following section describes how similar tools handle external data.
-
-#### DVC - uses copying and file links
-
-DVC supports [importing data](https://dvc.org/doc/use-cases/data-registry#data-import-workflow)
-from external sources. When doing so, DVC saves dependency metadata about that data source.
-
-DVC supports storing data in and retrieving data from a [remote
-](https://dvc.org/doc/start/data-management#storing-and-sharing).
-Data is copied between the local file system and the remote via explicit push
-and pull commands.
-
-If data is too big for the local file system, DVC supports using an [external
-cache](https://dvc.org/doc/command-reference/add#example-transfer-to-an-external-cache).
-The external cache works via file links.
-
-#### Snakemake - uses copying
-
-Snakemake supports the use of remote files within pipelines.
-When a file is needed for a pipeline execution, it is copied to the local file system.
-
-From the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/snakefiles/remote_files.html):
-
-> During rule execution, a remote file (or object) specified is downloaded to the
->  local cwd, within a sub-directory bearing the same name as the remote provider.
->  ... You can think of each local remote sub-directory as a local mirror of the
->   remote system. 
-
-#### Kedro - uses programmatic access
-
-Kedro's data access is based on configuration files ([Data Catalog](https://kedro.readthedocs.io/en/stable/data/data_catalog.html#the-data-catalog)).
-In the configuration, kedro uses [fsspec](https://kedro.readthedocs.io/en/stable/data/data_catalog.html#specifying-the-location-of-the-dataset)
-to provide a standardized interface to remote data systems.
-Since kedro is python only, data is accessed programatically.
-In other words, the units of kedro workflows are python functions that take as
-input live python objects (dataframes, etc.), not file paths. fsspec helps map
-a variety of remote data locations to live python objects.
 
 ## Design Detail
 
@@ -270,7 +269,7 @@ provenance in the knowledge graph.
 The default behavior of the CLI when staging the data locally (i.e. not on a
 Renkulab instance) should be to copy the data into the project. When disk space
 considerations allow it, this is preferred because data access will (almost)
-always be faster than over the network. The user should
+always be faster than over the network.
 
 #### Mode 2: mount
 
@@ -428,7 +427,10 @@ Data Sources:
 ```
 
 Note that `location: None` because the dataset has not been staged yet. See
-below for details on that.
+below for details on that. It is possible for a dataset to contain data from
+multiple sources. In the case of new data added to the dataset locally, the user
+should be able to decide which external location to push the data to either at
+push time or when adding the data files to the dataset.
 
 #### Staging external data:
 
@@ -443,10 +445,10 @@ renku dataset stage external-dataset
 This command copies by default. If the user wants to avoid copying and stage by
 mounting, FUSE can be used. For some filesystems we might be able to warn the
 user that the data they are trying to stage is very big and they should use the
-`--no-copy` flag instead.
+`--mount` flag instead.
 
 ```
-renku dataset stage --no-copy external-dataset
+renku dataset stage --mount external-dataset
 ```
 
 The default location is `data/<dataset-name>` but can be specified with the
@@ -507,8 +509,8 @@ to do
 renku storage stage s3-bucket path/to/bucket
 ```
 
-The `--copy/--no-copy` semantics are the same as in the `dataset` commands
-above. The `path/to/bucket` is entered in `.gitignore`. If the `--no-copy` flag
+The `--copy/--mount` semantics are the same as in the `dataset` commands
+above. The `path/to/bucket` is entered in `.gitignore`. If the `--mount` flag
 is used, the data is mounted instead of copied. Same as above, the `--location`
 flag can also be used to specify a different location for staging the data,
 which is then linked to `path/to/bucket`.
@@ -543,6 +545,21 @@ available in the local project. If the data source is mounted, then the changes
 are reflected on the remote location immediately; if the data is copied, it
 should be possible to implement a `sync` command that would copy upstream new or
 changed files.
+
+
+#### Syncing changes with remote storage
+
+In the default "copy" mode, there must be a way of syncing data back to the
+remote storage (and to potentially update local copies with new content).
+
+```
+renku storage sync
+```
+
+Renku should detect conflicts (when both the remote and local have been updated)
+and give the user the option to either persist/keep the local or remote copy.
+Alternatively, it should let the user abort the action altogether to avoid
+accidental data loss.
 
 #### Streaming external data
 
