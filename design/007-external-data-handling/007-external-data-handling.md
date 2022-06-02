@@ -23,6 +23,10 @@ provenance of external data; Renku should preserve the information about the
 original source of the data and provide mechanisms to retrieve this data when
 necessary.
 
+Note, however, that although this RFC focuses on the CLI, it should be assumed
+that all the same applies to all other parts of Renku including Renkulab and
+interactive sessions.
+
 ## Current status
 
 ### Git-LFS
