@@ -33,13 +33,13 @@ or any other Renku components.
         participant Renku[Gateway]
         participant Renku[Notebooks]
         User->>+Custodian: click on session start link<br>/renku_session?params...
-        Custodian->>Custodian: Authenticate user internally
         Custodian->>+Renku[Keycloak]: GET auth/realms/Renku/protocol/openid-connect/auth<br>?client_id=custodian-id<br>&response_type=code...
         Renku[Keycloak]->>User: Get user confirmation
         User->>Renku[Keycloak]: Agree to grant access
         Renku[Keycloak]->>Custodian: Authorization code
         Custodian->>Renku[Keycloak]: POST auth/realms/Renku/protocol/openid-connect/token<br>with Authorization code
-        Renku[Keycloak]->>-Custodian: verySecretJWT access token
+        Renku[Keycloak]->>-Custodian: verySecretJWT access token + ID token
+        Custodian->>Custodian: Authenticate user and perform access control based on existing contracts
         Custodian->>Renku[Gateway]: POST /api/notebooks/servers<br>Authorization: Bearer verySecretJWT<br>server options with s3 credentials
         activate Renku[Gateway]
         Renku[Gateway]->>Renku[Gateway]: Authenticate user
