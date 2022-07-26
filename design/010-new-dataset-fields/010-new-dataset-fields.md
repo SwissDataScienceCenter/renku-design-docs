@@ -71,13 +71,27 @@ For visibility and citability, affiliations should have a unique identifier. Aff
 
 **Topic**
 
-The research field. Ideally, fine grained terms with hierarchical relationships. This would also be relevant for projects.
+The research field. Can be a flat list of keywords, or ideally fine grained terms with hierarchical relationships. This would also be relevant for projects. Topics could be differentiated from arbitrary keywords by using DefinedTerm instead of Text. This would allow a simple implementation similar to [Dataverse](https://demo.dataverse.org/dataverse/demo/search), which uses a (short) flat list of terms. 
 
 * **Reason:** User persona + user feedback
-* **Mapping:** [about](https://schema.org/about)
-* **Value:** Maybe [DefinedTerm](https://schema.org/DefinedTerm)
+* **Mapping:** [about](https://schema.org/keywords)
+* **Value:** [DefinedTerm](https://schema.org/DefinedTerm)
+* **Example:**
 
-> Note: I am not sure what's the best way of implementing this. [Dataverse](https://demo.dataverse.org/dataverse/demo/search) uses a (short) flat list of terms, whereas [Swiss UBase](https://www.swissubase.ch/en/) uses a fine grained nested list. The closest thing I found is the ["Data Science Education Ontology (DSEO)"](https://fairsharing.org/FAIRsharing.7p0xdg). It has a [Domain](https://bioportal.bioontology.org/ontologies/DSEO/?p=classes&conceptid=http%3A%2F%2Fbigdatau.org%2Fdseo%23domain) class which subclasses owl#Thing.
+```json
+"http://schema.org/keywords": [
+      {
+        "@value": "demo"
+      },
+      {
+        "@type": "DefinedTerm",
+        "@id": "https://www.wikidata.org/wiki/Q2539",
+        "name": "Machine learning",
+      }
+]
+```
+
+> Note: A more complex approach similar to [Swiss UBase](https://www.swissubase.ch/en/) with hierarchical fine grained topics may be desirable but harder to implement.["Data Science Education Ontology (DSEO)"](https://fairsharing.org/FAIRsharing.7p0xdg) has a [Domain](https://bioportal.bioontology.org/ontologies/DSEO/?p=classes&conceptid=http%3A%2F%2Fbigdatau.org%2Fdseo%23domain) class which subclasses owl#Thing. Wikidata's [academic disciplines](https://www.wikidata.org/wiki/Q336) also provide unique identifiers and with a herarchy encoded through `instance_of` / `has_parts` properties.
 
 **Size**
 
