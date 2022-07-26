@@ -64,7 +64,7 @@ For visibility and citability, affiliations should have a unique identifier. Aff
     "@type": "Organization",
     "name": "EPFL",
     "identifier": "https://ror.org/02s376052"
-    }
+    }]
 ```
 
 > Note: ROR has a public REST API which could be used to autosuggest records in a text form in the future. More info [here](https://ror.readme.io/docs/create-affiliation-selection-dropdowntypeahead-widgets)
