@@ -50,6 +50,8 @@ Data usage license.
 * **Value:** [URL](https://schema.org/URL) from https://spdx.org/licenses
 * **Example:** `https://schema.org/license: https://spdx.org/licenses/MIT.html`
 
+> Note: See [here](https://github.com/spdx/license-list-data/blob/master/accessingLicenses.md) for programmatic access to the list of licenses and the details of each license.
+
 **Affiliation**
 
 For visibility and citability, affiliations should have a unique identifier. Affiliation already exists as a property of the dataset's creator. Ideally we could add a unique identifier to it. Rather than a property of the Dataset, this may be a property of the creator's `affiliation` and would also be available for projects.
