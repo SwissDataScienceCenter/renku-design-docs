@@ -137,6 +137,8 @@ Should some of these fields be editable directly by users on the command line ? 
 
 Would some of these changes introduce incompatibility in (ex/im)porting datasets to/from third party providers ?
 
+How do we deal with missing data ?
+
 Is DSEO's `Domain` class a desirable solution for research topic ?
 
 > What related issues do you consider out of scope for this RFC that could be addressed in the future independently of the solution that comes out of this RFC?
