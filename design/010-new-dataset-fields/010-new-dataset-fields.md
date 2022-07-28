@@ -43,14 +43,17 @@ The following fields can be identified from the data above. They are listed in o
 
 **License**
 
-Data usage license.
+Data usage license. The license cannot live _only_ as metadata and there must also be a file in the project. Therefore, this field should be populated when the file is added. In the future, Renku could propose a (graphical/no code) way to choose a license, which would both populate the metadata field and add the file. Here, we simply propose to make this optional field available for future use.
 
 * **Reason:** FAIR compliance
 * **Mapping:** [license](https://schema.org/license)
 * **Value:** [URL](https://schema.org/URL) from https://spdx.org/licenses
-* **Example:** `https://schema.org/license: https://spdx.org/licenses/MIT.html`
+* **Example:**
+```json
+"https://schema.org/license" : "https://spdx.org/licenses/MIT.html"
+```
 
-> Note: See [here](https://github.com/spdx/license-list-data/blob/master/accessingLicenses.md) for programmatic access to the list of licenses and the details of each license.
+> Note: See [here](https://github.com/spdx/license-list-data/blob/master/accessingLicenses.md) for programmatic access to the list of licenses and the details of each license. If a license already exists in the project, SPDX also provides a [license matcher](https://github.com/spdx/spdx-license-matcher) to infer the license type from the text.
 
 **Affiliation**
 
