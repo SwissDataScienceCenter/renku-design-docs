@@ -103,9 +103,16 @@ The research field. Can be a flat list of keywords, or ideally fine grained term
 * **Reason:** user feedback
 * **Mapping:** [size](https://schema.org/size)
 * **Value:** [Text](https://schema.org/Text)
-* **Example:** `https://schema.org/size: "130MB"`
+* **Example:**
+```json
+"https://schema.org/size": {
+    "@type": "QuantitativeValue",
+    "value": 130,
+    "unitCode": "AD"
+}
+```
 
-> Note: It may not be possible to set it for external datasets.
+> Note: It may not be possible to set it for external datasets. Also, [contentSize](https://schema.org/contentSize) could be more appropriate, but for now it only supports text.
 
 ## Drawbacks
 
