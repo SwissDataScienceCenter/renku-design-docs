@@ -55,25 +55,6 @@ Data usage license. The license cannot live _only_ as metadata and there must al
 
 > Note: See [here](https://github.com/spdx/license-list-data/blob/master/accessingLicenses.md) for programmatic access to the list of licenses and the details of each license. If a license already exists in the project, SPDX also provides a [license matcher](https://github.com/spdx/spdx-license-matcher) to infer the license type from the text.
 
-**Affiliation**
-
-For visibility and citability, affiliations should have a unique identifier. Affiliation already exists as a property of the dataset's creator. Ideally we could add a unique identifier to it. Rather than a property of the Dataset, this may be a property of the creator's `affiliation` and would also be available for projects.
-
-* **Reason:** FAIR compliance + user persona
-* **Mapping:** [creator](https://schema.org/creator) > [affiliation](https://schema.org/affiliation) > [Organization](https://schema.org/Organization) > [identifier](https://schema.org/identifier)
-* **Value:** [URL](https://schema.org/URL) from https://ror.org/
-* **Example:**
-```json
-"http://schema.org/affiliation": [
-    {
-    "@type": "Organization",
-    "name": "EPFL",
-    "identifier": "https://ror.org/02s376052"
-    }]
-```
-
-> Note: ROR has a public REST API which could be used to autosuggest records in a text form in the future. More info [here](https://ror.readme.io/docs/create-affiliation-selection-dropdowntypeahead-widgets)
-
 **Topic**
 
 The research field. Can be a flat list of keywords, or ideally fine grained terms with hierarchical relationships. This would also be relevant for projects. Topics could be differentiated from arbitrary keywords by using DefinedTerm instead of Text. This would allow a simple implementation similar to [Dataverse](https://demo.dataverse.org/dataverse/demo/search), which uses a (short) flat list of terms. 
@@ -156,3 +137,28 @@ Is DSEO's `Domain` class a desirable solution for research topic ?
 > What related issues do you consider out of scope for this RFC that could be addressed in the future independently of the solution that comes out of this RFC?
 
 Setting the values (e.g. license, affiliation) in the UI, potentially through forms with autosuggestion.
+
+Affiliation was deemed out of scope, as it implies modifying important changes to the user's metadata and not the Dataset's. The initial proposal is shown below for reference.
+
+<details>
+<summary>Affiliation field (out of scope)</summary>
+
+**Affiliation**
+
+For visibility and citability, affiliations should have a unique identifier. Affiliation already exists as a property of the dataset's creator. Ideally we could add a unique identifier to it. Rather than a property of the Dataset, this may be a property of the creator's `affiliation` and would also be available for projects.
+
+* **Reason:** FAIR compliance + user persona
+* **Mapping:** [creator](https://schema.org/creator) > [affiliation](https://schema.org/affiliation) > [Organization](https://schema.org/Organization) > [identifier](https://schema.org/identifier)
+* **Value:** [URL](https://schema.org/URL) from https://ror.org/
+* **Example:**
+```json
+"http://schema.org/affiliation": [
+    {
+    "@type": "Organization",
+    "name": "EPFL",
+    "identifier": "https://ror.org/02s376052"
+    }]
+```
+
+> Note: ROR has a public REST API which could be used to autosuggest records in a text form in the future. More info [here](https://ror.readme.io/docs/create-affiliation-selection-dropdowntypeahead-widgets)
+</details>
