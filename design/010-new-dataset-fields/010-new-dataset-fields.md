@@ -49,8 +49,21 @@ Data usage license. The license cannot live _only_ as metadata and there must al
 * **Mapping:** [license](https://schema.org/license)
 * **Value:** [URL](https://schema.org/URL) from https://spdx.org/licenses
 * **Example:**
+
 ```json
 "https://schema.org/license" : "https://spdx.org/licenses/MIT.html"
+```
+* **Alternative with DigitalDocument**:
+```json
+{
+  "@context": "http://schema.org/",
+  "@type": "DigitalDocument",
+  "name": "MIT License",
+  "identifier": "MIT",
+  "url": "https://spdx.org/licenses/MIT.html",
+  "author": "Alice",
+  "text": "[license text]"
+}
 ```
 
 > Note: See [here](https://github.com/spdx/license-list-data/blob/master/accessingLicenses.md) for programmatic access to the list of licenses and the details of each license. If a license already exists in the project, SPDX also provides a [license matcher](https://github.com/spdx/spdx-license-matcher) to infer the license type from the text.
@@ -85,6 +98,7 @@ The research field. Can be a flat list of keywords, or ideally fine grained term
 * **Mapping:** [size](https://schema.org/size)
 * **Value:** [Text](https://schema.org/Text)
 * **Example:**
+
 ```json
 "https://schema.org/size": {
     "@type": "QuantitativeValue",
