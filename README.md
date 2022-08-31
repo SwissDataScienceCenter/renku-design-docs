@@ -25,10 +25,10 @@ vetting process.
 ### Request-for-comment (RFC)
 
 For large architectural or refactoring undertakings, the RFC (Request For
-Comments) process provides a persistent and controlled path changes to enter the
-codebase. RFCs are much more detailed than feature pitches and should provide
-enough information such that issues can be made directly from the information
-found in the RFC.
+Comments) process provides a persistent and controlled path for changes to enter
+the codebase. RFCs are much more detailed than feature pitches and should
+provide enough information such that issues can be made directly from the
+information found in the RFC.
 
 ## When to submit a feature pitch document
 
