@@ -20,18 +20,18 @@ In both cases, seeing the data dependencies, the code required, and the outputs 
 
 ## 🍴 Appetite
 
-Tracking and explaining what happens with data is one of the key premises of Renku. Data provenance tracking is also what drives interest in Renku as a platform, so improving the state of how this information is made available in the web app should be a priority. We can and should dedicate a full two sprints to getting a first iteration of the workflows view within a project.
+Tracking and explaining what happens with data is one of the key premises of Renku. Data provenance tracking is also what drives interest in Renku as a platform, so improving how this information is made available in the web app should be a priority. We can and should dedicate a full two sprints to getting a first iteration of the workflows view within a project.
 
 ## 🎯 Solution
 
-Boundaries of the solution/implementation: 
+Boundaries of the solution/implementation:
 
 - Only focus on the workflows view *inside* a project
 - Listing and viewing only; no editing, no executio
 
 ### Interactions
 
-![Untitled](Untitled.png)
+![breadboard](flow-breadboard.png)
 
 The flow can be broken down like this:
 
@@ -39,11 +39,11 @@ The flow can be broken down like this:
 - `Workflows` view shows a list of workflows with *very* basic information (e.g. name & last time it was executed)
 - Clicking on a workflow name opens the workflow in the viewer; this includes a panel of *basic* metadata and a panel with a workflow visualization.
 - Each workflow view should allow the user to see the data dependencies (inputs), the results (outputs), the commands/code used, and the parameters; clicking on elements of this listing (i.e. files) should take the user to the file viewer - yes, this is a dead-end for now because there won’t be an obvious way to get back to the workflow viewer apart from clicking the “back” browser button 💀
-    
-    ![Screenshot_20220805_173132.png](Screenshot_20220805_173132.png)
-    
+
+    ![layout sketch](layout-sketch.png)
+
     *Sketches on Figma: [https://www.figma.com/file/PbmaCBxOyIV96TNT4LZYzL/Workflows-visualization*](https://www.figma.com/file/PbmaCBxOyIV96TNT4LZYzL/Workflows-visualization*)*
-    
+
 
 ### Some additional constraints
 
@@ -95,10 +95,10 @@ We’d like to rework the file browser in a future pitch. For the scope of this 
 - Graph visualization: it’s tempting to design a brand-new graph explorer, but that might be really time-consuming, or end up providing a bad UX (see lineage?). Starting from a textual output will be a quick and reasonably effective solution. We will propose the visualization as a separate feature.
     - On the topic of graph visualization, some things that do not work well with the lineage view:
         - showing information inside the nodes is not great/easy. For example, see the “execution” node (diamond) below:
-        
-        ![Untitled](Untitled%201.png)
-        
+
+        ![lineage](lineage.png)
+
         - with many nodes (>50), the visualization becomes messy very quickly
         - it lacks some additional interactions that would make it possible to see additional data or metadata, in the sense of the renku CLI `renku workflow visualize` command (but probably with some fewer details):
-        
-        ![Untitled](Untitled%202.png)
+
+        ![workflow-visualize](workflow-visualize.png)
