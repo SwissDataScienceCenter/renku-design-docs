@@ -71,7 +71,7 @@ may include:
 - After the pull request is approved and merged, the feature pitch or RFC should
   be considered for entering into the development process.
 
-Feature pitches should be crafted in a way that allow room for interpretation at
+Feature pitches should be crafted in a way that allows room for interpretation at
 the implementation stage. As such, they should not need to be modified after they
 have been vetted by team leads and other stakeholders.
 
