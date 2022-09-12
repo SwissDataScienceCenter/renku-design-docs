@@ -9,7 +9,7 @@ Tags: UI, workflows
 
 One of the core premises of Renku is to expose connections between code and data. However, the only place in the web UI where users can see any of this information for a project is in the lineage view. That view is incomplete at best and not particularly user-friendly. It is not easy to find out about it in the first place unless you are specifically told where to look. We have a nice abstraction for workflows (plans and provenance) and we should expose it in the UI so it can contribute to understanding what happens in a project. Just like `Datasets` abstract which data is important in/for a project, `Workflows` abstract which processes are relevant for turning data into results.
 
-In addition, we have significant inconsistency between what users experience in the CLI vs. the web app. In the CLI, a user can list/view/modify/create workflows, whereas in the UI they cannot do any of those things. We need to start offering UI views that expose these concepts.
+In addition, we have an inconsistency between what users experience in the CLI vs. the web app. In the CLI, a user can list/view/modify/create workflows, whereas in the UI they cannot do any of those things. We need to start offering UI views that expose these concepts.
 
 This mini-project is a starting point to rectifying this situation. The thrust of the feature is not so much *action* but *understanding* - what is happening in a project, how complex is the path to achieving a result, what is needed to transform data into results? It should satisfy some basic user-story questions:
 
@@ -27,7 +27,7 @@ Tracking and explaining what happens with data is one of the key premises of Ren
 Boundaries of the solution/implementation:
 
 - Only focus on the workflows view *inside* a project
-- Listing and viewing only; no editing, no executio
+- Listing and viewing only; no editing, no execution
 
 ### Interactions
 
@@ -63,6 +63,9 @@ One starting point is the Coteries lineage view - see the design doc:
 Link to preview: [https://www.figma.com/proto/cmVH2YlFGz6uAv2EEH1sBZ/Renku---User-interface?page-id=1%3A2&node-id=187%3A2088&viewport=1613%2C-2648%2C0.6&scaling=scale-down&starting-point-node-id=29%3A756](https://www.figma.com/proto/cmVH2YlFGz6uAv2EEH1sBZ/Renku---User-interface?page-id=1%3A2&node-id=187%3A2088&viewport=1613%2C-2648%2C0.6&scaling=scale-down&starting-point-node-id=29%3A756)
 
 **Some examples of workflow viewers**
+
+We are not building a workflow viewer in this mini-project - but it makes sense to see how other projects have tried
+to solve this.
 
 - Real workflows get messy - see, for example, [this one](https://view.commonwl.org/workflows/github.com/mnneveau/cancer-genomics-workflow/blob/master/detect_variants/detect_variants.cwl) from the CWL workflow viewer.
 - Kedro has a really nice workflow viewer: [https://demo.kedro.org/](https://demo.kedro.org/)
