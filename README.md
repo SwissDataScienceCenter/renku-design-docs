@@ -57,7 +57,7 @@ may include:
 ## How to submit a feature pitch or an RFC
 
 - Copy the appropriate template (`feature-pitch-template.md` or
-  `rfc-template.md`) and name it like `0000-my-feature.md` (with an incrementing
+  `rfc-template.md`) and name it like `000-my-feature.md` (with an incrementing
   number and appropriate title). Make a subdirectory in the `feature pitches` or
   `rfcs/` directory for your document.
 
