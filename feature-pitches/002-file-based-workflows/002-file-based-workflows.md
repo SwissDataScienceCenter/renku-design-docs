@@ -22,7 +22,7 @@ We’d like to offer the ability to define Renku workflows in a file, where the 
 
 I’ve done a [survey of popular workflow tools](https://sdsc.atlassian.net/wiki/spaces/RENKU/pages/2310701105/Workflow+Tool+Research), and YAML seems to be a common choice for a workflow file, but we leave the final decision to the team.
 
-![fat marker file](fat-marker-file.png)
+<img src="fat-marker-file.png" width="400">
 
 The workflow file names a sequence of steps, and each step names its command, inputs, outputs, parameters, etc. Each step should be named so that it can be referenced for running individually. I imagine that the structure of the workflow step definition in the file would be pretty similar to the output of `renku workflow show`.
 
