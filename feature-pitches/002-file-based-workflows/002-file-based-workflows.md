@@ -114,7 +114,9 @@ We’re not trying to make a comprehensive workflow tool with lots of functional
 
 Specifically, the following items are out of scope for this pitch:
 
-- expressing `renku workflow iterate` in the workflow file definition syntax
-- any kinds of looping, branching, and wildcard syntax
-- any effort to combine the functionality of the currently existing parameter file and the workflow definition file, for example to define a set of related workflow experiments
-- generating a workflow file from an already existing worklflow or `renku run`
+- Expressing `renku workflow iterate` in the workflow file definition syntax
+- Any kinds of looping, branching, and wildcard syntax
+- Any effort to combine the functionality of the currently existing parameter file and the workflow definition file, for example to define a set of related workflow experiments
+- Generating a workflow file from an already existing renku worklflow or `renku run`
+
+On a separate note: Another frustration that users run into when using `renku run` and `renku workflow` is our requirement that the git working tree be clean before running either of these commands. Though we would like to figure out a better UX for this, doing so it outside the scope of this pitch.
