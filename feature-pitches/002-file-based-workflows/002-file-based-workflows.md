@@ -2,7 +2,7 @@
 
 This feature will make Renku workflows more functional for more experienced coders. But even better, it will make workflows easier to teach and learn, and make the world of workflows accessible to a broader audience.
 
-## 🤔 Problem
+## 🤔 Context & Problem
 
 Workflows are Renku's reproducibility “last frontier”. Renku helps users with code versioning, dataset metadata, environment containerization... but workflows remain one of Renku’s least used features. Why is this?
 
@@ -42,7 +42,7 @@ The user would still use the CLI to run the workflow, referencing the workflow v
 
 Developing a workflow should be as simple to the user as editing the workflow file, executing the workflow file on the CLI, making further modifications to the workflow file, executing the workflow file again, etc. Renku should not interrupt or slow down this development process. 
 
-The user should be able to run a specific named workflow step from a file without running the whole file (a la `renku workflow execute workflow.yml step_1`, or even `renku workflow execute step_1` if we can provide searching all workflow files). As a _nice-to-have_, it would also be nice to support running a subset of steps, for example `renku workflow execute workflow.yml --from step_name_3 --to step_name_6`.
+The user should be able to run a specific named workflow step from a file without running the whole file (a la `renku workflow execute workflow.yml step_1`). As a _nice-to-have_, it would also be nice to support running a subset of steps, for example `renku workflow execute workflow.yml --from step_name_3 --to step_name_6`.
 
 ### Improving workflow user awareness: A workflow file template
 
@@ -100,10 +100,14 @@ My default is *no*, keep it simple for the scope of this pitch.
 
 In the current `renku run` implementation, a `plan` is only created after the command executed successfully. By importing and creating the `plan` upon executing the workflow file, the user could potentially end up with a non-executable `plan` in their project. This sounds non-ideal, however, it doesn’t really have any implications for the user, so it’s up to the team for how they would like to handle this behavior.
 
-## 🙅‍♀️ No-gos
+## 🙅‍♀️ Out of Scope
 
 There are a lot of feature-rich workflow tools out there already. We’re not trying to make the *best* workflow tool, and not even a comprehensive one. If we can get a researcher started using workflows for the first time because simple workflows are easy to create in Renku, and then that user switches to a different workflow tool that suits them better, that’s a win for Open Research!
 
 We’re not trying to make a comprehensive workflow tool with lots of functionality. We’re trying to make the *minimal* workflow tool a user can learn, so they can take their research project to the next level of reproducibility. So, the file-based workflow syntax need only support a minimal set of workflow functionality.
 
-Specifically, expressing `renku workflow iterate` in the workflow file definition syntax is out of scope, along with any kinds of looping, branching, and wildcard syntax.
+Specifically, the following items are out of scope for this pitch:
+
+- expressing `renku workflow iterate` in the workflow file definition syntax
+- any kinds of looping, branching, and wildcard syntax
+- any effort to combine the functionality of the currently existing parameter file and the workflow definition file, for example to define a set of related workflow experiments
