@@ -26,9 +26,15 @@ I’ve done a [survey of popular workflow tools](https://sdsc.atlassian.net/wiki
 
 The workflow file names a sequence of steps, and each step names its command, inputs, outputs, parameters, etc. Each step should be named so that it can be referenced for running individually. I imagine that the structure of the workflow step definition in the file would be pretty similar to the output of `renku workflow show`.
 
+As a nice-to-have, the workflow definition file should allow for the specification of workflow annotations and additional metadata.
+
 ![renku workflow show](workflow-show.png)
 
 For the scope of this pitch, expressing `renku workflow iterate` in the workflow file definition syntax is _out of scope_, along with any kinds of looping or branching.
+
+### When is the workflow "saved" to the project?
+
+The workflow defined in a workflow file is "saved" to the Renku project when the user executes the workflow. This means the workflow defined in the workflow file is not in the project metadata before the user runs it.
 
 ### Editing workflow files
 
@@ -38,7 +44,7 @@ The user should be able to create more than one workflow file in a project.
 
 ### Running workflow files
 
-The user would still use the CLI to run the workflow, referencing the workflow via the workflow file name. To improve usability for non-CLI users, in tutorials, we could perhaps demonstrate running shell commands from inside a notebook (`!renku workflow execute workflow.yml`).
+The user would still use the CLI to run the workflow, referencing the workflow via the workflow file name or the workflow name (TBD exactly how this works). To improve usability for non-CLI users, in tutorials, we could perhaps demonstrate running shell commands from inside a notebook (`!renku workflow execute workflow.yml`).
 
 Developing a workflow should be as simple to the user as editing the workflow file, executing the workflow file on the CLI, making further modifications to the workflow file, executing the workflow file again, etc. Renku should not interrupt or slow down this development process. 
 
@@ -111,3 +117,4 @@ Specifically, the following items are out of scope for this pitch:
 - expressing `renku workflow iterate` in the workflow file definition syntax
 - any kinds of looping, branching, and wildcard syntax
 - any effort to combine the functionality of the currently existing parameter file and the workflow definition file, for example to define a set of related workflow experiments
+- generating a workflow file from an already existing worklflow or `renku run`
