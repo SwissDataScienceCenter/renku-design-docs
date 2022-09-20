@@ -46,7 +46,7 @@ or any other Renku components.
         Renku[Gateway]->>+Renku[Notebooks]: POST /servers
         deactivate Renku[Gateway]
         Renku[Notebooks]->>-Custodian: {server: name, status: starting, ...}
-        Custodian-->>-User: Feedback on whether session launched?
+        Custodian-->>-User: Redirect to the sessions tab
 ```
 
 ## Questions / Concerns
@@ -54,6 +54,7 @@ or any other Renku components.
 - The start link the user clicks to initiate all this has to include some credentials to
 authenticate with the Custodian, or the cookies from the session should contain information
 so that the custodian can detect and authenticate the user. 
+  - The current solution is to authenticate users with their Renku account using OpenID Connect.
 - It would be nice if the user could get some kind of feedback from this process.
 As it stands right now the user should just see the session "magically" appear in
 the renku UI after they click the link.
