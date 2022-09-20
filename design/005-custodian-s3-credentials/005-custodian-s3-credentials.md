@@ -1,5 +1,5 @@
 - Start Date: 2022-04-28
-- Status: Draft
+- Status: Partially implemented
 
 # Using Custodian to manage S3 credentials
 
