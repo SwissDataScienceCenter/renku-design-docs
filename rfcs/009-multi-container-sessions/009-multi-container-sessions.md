@@ -104,7 +104,6 @@ spec:
   storage:
     pvc:
       enabled:
-      mountPath: /home/jovyan/work
       storageClassName:
     size:
 ```
@@ -151,3 +150,6 @@ We are adding a bit more complexity to the code.
 > What parts of the design do you expect to resolve through the implementation of this feature before stabilisation?
 
 > What related issues do you consider out of scope for this RFC that could be addressed in the future independently of the solution that comes out of this RFC?
+
+> Where to mount the PVC in additional containers? Currently we mount at `/home/jovyan/work` but what if a `jovyan` user does not 
+exist in the image that is used to run a container? Should we be asking users for this specifically?
