@@ -14,7 +14,7 @@ should be done by Amalthea.
 
 - Users can run additional programs like dashboards beside their regular session
 - We can run alternative UIs like vscode or rstudio alongside jupyterlab without relying on the proxying
-from rstudio
+from jupyterlab
 - We further generalize Amalthea to accept any type of service/container
 
 ## Design Detail
@@ -41,14 +41,9 @@ spec:
     defaultUrl:
     image:
     resources:
-    rootDir: /home/jovyanl/work/<project_name>
+    rootDir: /home/jovyan/work/<project_name>
   routing:
     host: dev.renku.ch
-    ingressAnnotations:
-      kubernetes.io/ingress.class: nginx
-      nginx.ingress.kubernetes.io/proxy-body-size: "0"
-      nginx.ingress.kubernetes.io/proxy-buffer-size: 8k
-      nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
     path: /sessions/<session_name>
     tls:
       enabled: true
@@ -56,7 +51,7 @@ spec:
   storage:
     pvc:
       enabled:
-      mountPath: /home/jovyanl/work
+      mountPath: /home/jovyan/work
       storageClassName:
     size:
 ```
@@ -102,11 +97,6 @@ spec:
       startupProbe: {}
   routing:
     host: dev.renku.ch
-    ingressAnnotations:
-      kubernetes.io/ingress.class: nginx
-      nginx.ingress.kubernetes.io/proxy-body-size: "0"
-      nginx.ingress.kubernetes.io/proxy-buffer-size: 8k
-      nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
     path: /sessions/<session_name>
     tls:
       enabled: true
@@ -114,7 +104,7 @@ spec:
   storage:
     pvc:
       enabled:
-      mountPath: /home/jovyanl/work
+      mountPath: /home/jovyan/work
       storageClassName:
     size:
 ```
