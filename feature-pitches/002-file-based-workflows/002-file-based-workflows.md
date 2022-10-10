@@ -46,6 +46,10 @@ Developing a workflow should be as simple to the user as editing the workflow fi
 
 The user should be able to run a specific named workflow step from a file without running the whole file (a la `renku run workflow.yml step_1`). This functionality is valuable because it provides an immediate benefit to users to develop workflows _as they code_, not just at the end of the project to encode the final project flow. Providing indexable workflows means users can encode workflow sub-steps they run frequently, such as re-computing a figure, without having to re-type a long command. As a _nice-to-have_, it would also be nice to support running a subset of steps, for example `renku run workflow.yml --from step_name_3 --to step_name_6`.
 
+### Updating file-based workflows
+
+`renku update <file-based workflow>` should check if the workflow file has been changed since last execution as well as if any of the steps' inputs have changed, and offer to run it again. TBD whether we can be smart and only run the affected subset of the workflow (For example, if a workflow has steps A -> B -> C and step B changed, only run B and C, not A).
+
 ### Improving workflow user awareness: A workflow file template
 
 In order to increase workflow usage, we also need to make users aware of them. To this end, it is worth considering adding a template workflow file to the default Renku project structure. For example, this could be a workflow file with a few example workflow steps written out but commented out. The user can uncomment it and replace the placeholders with their command, inputs, output, etc. There could also be a comment at the top of the file describing how to run the workflow.
