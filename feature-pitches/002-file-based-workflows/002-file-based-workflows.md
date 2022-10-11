@@ -66,6 +66,11 @@ Users do this frequently during development: run script `a`, generate file `b`. 
 
 The file-based workflow feature should solve this. The workflow should read the specified output in the workflow file, rather than detecting changed files. This removes the need for the user to delete the file so that Renku can detect its creation.
 
+### Nice-To-Haves: A summary
+- The workflow definition file allows for the specification of workflow annotations and additional metadata.
+- Support running a subset of steps, for example `renku run workflow.yml --from step_name_3 --to step_name_6`.
+- Generating a workflow file from an already existing renku worklflow or `renku run`.
+
 
 ## 🐰 Rabbit Holes
 
@@ -107,6 +112,5 @@ Specifically, the following items are out of scope for this pitch:
 - Expressing `renku workflow iterate` in the workflow file definition syntax
 - Any kinds of looping, branching, and wildcard syntax
 - Any effort to combine the functionality of the currently existing parameter file and the workflow definition file, for example to define a set of related workflow experiments
-- Generating a workflow file from an already existing renku worklflow or `renku run`
 
 On a separate note: Another frustration that users run into when using `renku run` and `renku workflow` is our requirement that the git working tree be clean before running either of these commands. Though we would like to figure out a better UX for this, doing so it outside the scope of this pitch.
