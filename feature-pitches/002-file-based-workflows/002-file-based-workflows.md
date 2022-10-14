@@ -52,6 +52,10 @@ The user should be able to run a specific named workflow step from a file withou
 
 Simiarly, `renku status` should check for file-based workflows where the definition file has been modified (or inputs have been modified).
 
+### Updating the Workflow Browser
+
+It is likely worth involving UI towards the end of this build to update the workflow browser, for example to visually distinguish CLI-composite workflows from file-based composite workflows, ensure the workflow run command displayed in the browser is correct for file-based workflows, and to show the workflow definition file in the workflow browser.
+
 ### Improving workflow user awareness: A workflow file template
 
 In order to increase workflow usage, we also need to make users aware of them. To this end, it is worth considering adding a template workflow file to the default Renku project structure. For example, this could be a workflow file with a few example workflow steps written out but commented out. The user can uncomment it and replace the placeholders with their command, inputs, output, etc. There could also be a comment at the top of the file describing how to run the workflow.
