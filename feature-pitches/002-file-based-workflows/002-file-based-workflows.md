@@ -1,4 +1,4 @@
-# Broadly Accessible Workflows via a Workflow File
+# Friendlier Workflows: adding a Workflow Definition File
 
 This feature will make Renku workflows more functional for experienced coders. But even better, it will make workflows easier to teach and learn, and make the world of workflows accessible to a broader audience.
 
