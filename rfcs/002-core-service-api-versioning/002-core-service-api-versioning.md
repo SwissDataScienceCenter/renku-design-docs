@@ -1,3 +1,5 @@
+- Status: Built
+
 # Renku Core Service API Versioning
 
 To maintain for backwards compatibility and not force migrations on users, we need to support multiple versions of the core-service in parallel.
