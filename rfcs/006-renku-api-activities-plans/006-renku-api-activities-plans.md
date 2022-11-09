@@ -1,5 +1,5 @@
 - Start Date: 23.03.2022
-- Status: Proposed
+- Status: Built
 
 # Using Plans and Activities through renku.api
 

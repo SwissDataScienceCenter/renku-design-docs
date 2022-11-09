@@ -1,5 +1,5 @@
 - Start date: 30.03.2022
-- Status: Draft
+- Status: Partially implemented
 
 # External Data Handling RFC
 
