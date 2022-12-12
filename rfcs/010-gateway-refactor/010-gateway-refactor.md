@@ -6,8 +6,14 @@
 ## Summary
 
 This proposes a fulll rewrite of the current gateway service. In addition, it also proposes
-that instead of using the oauth2-proxy in every user session that a centralized
-authentication service fulfils this role for all sessions.
+changes to the way that access control to Jupyter servers is handled. Currently, each Jupyter
+server establishes a session with the user. But going forward each user will have a session
+with the gateway which will be used to control access into each Jupyter server. 
+The main motivation for changing the access control for Jupyter servers is the desire to run
+each Jupyter server in its own subdomain. The problem with unique subdomains is that each Jupyter
+server's subdomain would have to be registered in Keycloak so that the Oauth2-proxy in each 
+Jupyter server can function properly. But if the Oauth session is handled by the gateway we can
+have a single callback address in Keycloak as we currently do.
 
 ## Motivation
 
