@@ -97,7 +97,7 @@ graph TD
     end
 ```
 
-3. User server sidedcar accessing a protected service
+3. User server sidecar accessing a protected service
 
 ```mermaid
 graph TD
