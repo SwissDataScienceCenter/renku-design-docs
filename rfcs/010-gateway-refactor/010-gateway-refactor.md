@@ -5,7 +5,7 @@
 
 ## Summary
 
-This proposes a fulll rewrite of the current gateway service. In addition, it also proposes
+This proposes a full rewrite of the current gateway service. In addition, it also proposes
 changes to the way that access control to Jupyter servers is handled. Currently, each Jupyter
 server establishes a session with the user. But going forward each user will have a session
 with the gateway which will be used to control access into each Jupyter server. 
