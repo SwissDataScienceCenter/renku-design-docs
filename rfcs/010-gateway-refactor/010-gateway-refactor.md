@@ -38,16 +38,16 @@ or access token for a Gitlab token)
 
 Using JWT access tokens for this purpose is not feasible. This is because access
 tokens from Keycloak expire usually within an hour or several hours. This means
-that anyone who has to remain authenticated for a long time with the gateway
-needs to also get a refresh token and worry about using this to have valid access
-tokens. Accepting an expired access token is not secure.
+that anyone (i.e. users, services or jupyter servers) who has to remain authenticated 
+for a long time with the gateway needs to also get a refresh token and worry about 
+using this to have valid access tokens. Accepting an expired access token is not secure.
 
 The gateway should instead have server-side sessions with every "client". For each such
-session the gateway will issue a random, hard to guess ID that will be stored either
-in a cookie or simply as a secret. This is exactly how sessions are handled by the
-ui-server. The cookie or ID is presented with every request to the gateway. The gateway
-looks this ID up in redis and if there is a match then any tokens/credentials stored
-under that key can be added to requests initiated by that ID.
+session the gateway will issue a random, hard to guess ID (i.e. a [session ID](https://en.wikipedia.org/wiki/Session_ID)) 
+that will be stored either in a cookie or simply as a secret. This is exactly how 
+sessions are handled by the ui-server. The cookie or ID is presented with every 
+request to the gateway. The gateway looks this ID up in redis and if there is a match
+then any tokens/credentials stored under that key can be added to requests initiated by that ID.
 
 These sessions are managed/started as follows:
 - when a user logs in they get a session
@@ -57,9 +57,10 @@ These sessions are managed/started as follows:
 since there is no additional credentials that need to be managed for anonymous users
 
 The gateway then has the following responsibilities:
-- store refresh and access tokens
-- keep all tokens stored up to date and manage refreshing tokens
-- destroy sessions when certain events occur (i.e. when a logout occurs)
+- store authentication tokens
+- update stored authentication tokens
+- refresh authentication tokens before expiration
+- destroy session IDs upon predetermined events (e.g. logout)
 
 ### Centralized Jupyter server authentication
 
