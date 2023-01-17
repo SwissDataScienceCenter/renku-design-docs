@@ -103,8 +103,7 @@ on the integration of this change with other existing and planned features etc.
 
 
 Ralf considered different messaging solutions
-[here](https://docs.google.com/spreadsheets/d/138apZ6QOLIkUSdiyViGVYbCMIb9-1RX20b0wJXJpiSc/edit?usp=sharing)
-- the contents are included here for completeness.
+[here](https://docs.google.com/spreadsheets/d/138apZ6QOLIkUSdiyViGVYbCMIb9-1RX20b0wJXJpiSc/edit?usp=sharing) - the contents are included here for completeness.
 
 |                                         | RabbitMQ                                           | Pulsar                                          | NATS                                    | Kafka |
 |-----------------------------------------|----------------------------------------------------|-------------------------------------------------|-----------------------------------------|-------|
