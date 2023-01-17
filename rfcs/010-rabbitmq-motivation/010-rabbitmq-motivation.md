@@ -37,23 +37,24 @@ with the needs of Renku.
 As well as this general driver, there are a number of specific use cases which
 can benefit from the availability of a messaging solution - these are:
 
-- the ui-server should be notified of session state changes by renku-notebooks;
+- the `ui-server` should be notified of session state changes by `renku-notebooks`;
   this is currently done via a polling mechanism but a messaging solution would
   be neater;
 - the core-service currently runs long-running jobs such as project migration - 
   migrating from one Renku project version to another - and dataset import using
-  python-rq. It would be desirable to realize both of these issues in a more
+  `python-rq`. It would be desirable to realize both of these issues in a more
   async manner such that a notification is triggered when the job is complete;
-- the Knowledge Graph currently uses the Renku CLI to generate triples; this is an
-  undesirable legacy dependency. A better way for this to work is for the
-  core-service to post the job to the message bus, it gets picked up by a
-  triples generation process which does its works and posts a message to the
-  message bus when finished. Specifics around how this can work have not been
-  agreed; one idea would be to use a workflow service such as argo, another
-  approach could be to simply have workers which eg scale with load;
+- the Knowledge Graph (KG) currently uses the Renku CLI to generate triples;
+  this is an undesirable legacy dependency. A better way for this to work is
+  for the core-service to notify KG probably via a synchronous call, KG then
+  posts the job to the message bus, it gets picked up by a triples generation
+  process which does its work and posts the resulting triples to the message
+  bus when finished. Specifics around how this can work have not been agreed;
+  one idea would be to use a workflow service such as `argo`, another approach
+  could be to simply have workers which scale with load;
 - currently, the UI polls the Knowledge Graph for status of processing of
-  triples; an async solution in which the UI was made aware of such processing
-  would be more desirable than a polling based approach;
+  triples; an async, messaging based  solution in which the UI was made aware
+  of such processing would be more desirable than a polling based approach;
 - in future, it will be desirable to support user workflows run in a Renku context -
   in this case, having some a messaging oriented solution for triggering jobs, 
   monitoring progress and knowing when they have completed will be required;
@@ -78,11 +79,11 @@ messaging solution as yet. In the github issue noted above, the following
 points relating to requirements were flagged:
 
 - it is anticipated that a message throughput of max some 10's of messages/sec
-  is required with something of the order of 200-500 concurrent users
+  is required with something of the order of 200-500 concurrent users;
 - persistence requirements at least initially will be minimal
   - Sean suggested introducing some persistence early with the idea that it's easier
-    to increase it rather than add it from scratch when we are in an operational context
-- there should be minimal sensitive content on the message bus
+    to increase it rather than add it from scratch when we are in an operational context;
+- there should be minimal sensitive content on the message bus;
 - it may be necessary to expose the message bus to the `renku` cli; in this
   case an OAuth2 mechanism provided by Keycloak could be appropriate
 
