@@ -40,8 +40,8 @@ can benefit from the availability of a messaging solution - these are:
 - the ui-server should be notified of session state changes by renku-notebooks;
   this is currently done via a polling mechanism but a messaging solution would
   be neater;
-- the core-service currently runs long-running jobs such as project migration
-  - migrating from one Renku project version to another - and dataset import using
+- the core-service currently runs long-running jobs such as project migration - 
+  migrating from one Renku project version to another - and dataset import using
   python-rq. It would be desirable to realize both of these issues in a more
   async manner such that a notification is triggered when the job is complete;
 - the Knowledge Graph currently uses the Renku CLI to generate triples; this is an
