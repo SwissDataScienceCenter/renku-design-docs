@@ -86,7 +86,7 @@ graph TD
     DB -- 4<br>KC access token<br>Server ID --> Gateway
     end    
     
-    Gateway -- 5<br>KC access token<br>Server ID--> Notebook[Notebook service]
+    Gateway -- 5<br>KC access token<br>KC ID token<br>Server ID--> Notebook[Notebook service]
     Notebook -- 6<br>KC user ID<br>Server ID--> Server[User server]
 ```
 
