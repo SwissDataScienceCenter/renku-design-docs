@@ -199,13 +199,20 @@ which already has a session with the user?
 Yes we are. But I am not sure how much of a problem this is. The functionality described here
 has to be implemented somewhere and the ui-server does not provide this currently.
 
+## HTTPS Endpoints Served by the proposed design
+- Callback for logging into Keycloak
+- Callback for logging into Gitlab
+- Login endpoint
+- Logout endpoint
+- Session refresh endpoint
+
 ## Unresolved questions
 
 Issues to be resolved through the RFC process before this is merged:
-- agreement on the resposiblities of the gateway
-- agreement on the design and decisions
-- whether to use more persistent storage for some sessions that need to be
-longer-lived (i.e. sessions for Jupyter servers)
+- ~~agreement on the resposiblities of the gateway~~
+- ~~agreement on the design and decisions~~
+- ~~whether to use more persistent storage for some sessions that need to be
+longer-lived (i.e. sessions for Jupyter servers)~~ 
 
 Issues to resolve through the implementation of this RFC:
 - potential elimination of traefik in the gateway (all golang web frameworks support reverse proxying out of the box)
