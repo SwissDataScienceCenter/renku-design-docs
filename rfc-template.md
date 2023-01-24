@@ -26,9 +26,9 @@ context, assumptions on external services etc
 and it makes sense to itemize a few different alternatives/approaches. If that is
 the case, these should be included here.
 
-> It can make sense to organize a meeting at which the Problem Statement, Key
+***It can make sense to organize a meeting at which the Problem Statement, Key
 Assumptions and Possible Solutions are discussed to explore the problem space
-as a lead in to defining the Proposed Solution.
+as a lead in to defining the Proposed Solution.***
 
 ## Proposed solution
 
@@ -39,9 +39,9 @@ infrastructure to understand. This should get into specifics and corner-cases,
 and include examples of how the service is used. Any new terminology should be 
 defined here.
 
-> It can make sense to organize a meeting to discuss the proposed solution such 
+***It can make sense to organize a meeting to discuss the proposed solution such 
 that the proposal is clear, the solution is convincing and the team believes it
-can be implemented in a reasonable amount of time.
+can be implemented in a reasonable amount of time.***
 
 ## Drawbacks
 
