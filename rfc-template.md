@@ -39,7 +39,7 @@ infrastructure to understand. This should get into specifics and corner-cases,
 and include examples of how the service is used. Any new terminology should be 
 defined here.
 
-***It can make sense to organize a meeting to discuss the proposed solution such 
+***It can make sense to organize a meeting to discuss the Proposed Solution such 
 that the proposal is clear, the solution is convincing and the team believes it
 can be implemented in a reasonable amount of time.***
 
