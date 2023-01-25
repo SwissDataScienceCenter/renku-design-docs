@@ -59,14 +59,20 @@ may include:
 - Copy the appropriate template (`feature-pitch-template.md` or
   `rfc-template.md`) and name it like `000-my-feature.md` (with an incrementing
   number and appropriate title). Make a subdirectory in the `feature pitches` or
-  `rfcs/` directory for your document.
+  `rfcs/` directory for your document;
 
+- It is highly recommended to arrange a discussion with other members of the
+  Renku team a couple of times during this process to ensure that everyone is
+  on the same page - this can reduce the amount of discussion which takes place
+  via github and increase the probability that the discussion is on point;
+  
 - Fill in the copied template with design details, taking care to address the
-  context, motivations, impact and design criteria/limitations
+  context, motivations, impact and design criteria/limitations - this can be
+  done in concert with the aforementioned team meetings;
 
 - Submit a pull request - depending on the feature or RFC, open a discussion on
   discourse to let the Renku community know or solicit comments from specific
-  interested parties.
+  interested parties; 
 
 - After the pull request is approved and merged, the feature pitch or RFC should
   be considered for entering into the development process.
