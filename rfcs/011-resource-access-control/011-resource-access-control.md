@@ -11,26 +11,24 @@ to specific compute resources.
 ## Problem Statement
 
 The main motivation for this is to enable Renku admins to control which users have access
-to specific compute resources. Currently there is one set of compute resource options that are
-available to all users on the platform. Therefore admins cannot provision or guarantee specific
-compute resources for specific users. This is a serious problem for adoption of Renku by groups
-within ETH or elsewhere that want guranteed access to significant compute resources such as 
-gpus or nodes with a lot of memory or cpu.
+to specific computing resources. Currently, there is one set of compute resource options that are
+available to all users on the platform. Therefore admins cannot provide or guarantee specific computing resources for specific users. This is a serious problem for the adoption of Renku by groups
+within ETH or elsewhere that want guaranteed access to significant computing resources such as GPUs or nodes with a lot of memory or CPU.
 
 Essential requirements:
-- user-level access control to cpu, memory, gpus and storage
+- user-level access control to CPU, memory, GPUs and storage
 - admins provision different resource pools and define these in Renku
 - admins assign specific users to specific resource pools
 - there is a default resources pool that all users have access to
 - resource pools have quotas on how much total resources are available in them
-- resource pools contain different flavours/combinations of preset gpu, cpu, memory and storage
-- convenient and transparent way for admins to define resource pools and assign users
+- resource pools contain different flavors/combinations of preset GPU, CPU, memory and storage
+- a convenient and transparent way for admins to define resource pools and assign users
 
 ## Key Assumptions
 
-- resource pools are assigned on a per user basis
+- resource pools are assigned on a per-user basis
 - Renku admins are in control of creating resource pools and assigning users to them
-- information about resource pools is persisted in a database and controled by a 
+- information about resource pools is persisted in a database and controlled by a 
   dedicated service
 
 ## Possible Solutions
@@ -43,18 +41,17 @@ Essential requirements:
 
 ![Basic architecture diagram](./overall-flow.png)
 
-Store information about resource pools in postgres. Create a dedicated service which will
-expose an API that will allow admins to create resource pools, modify them or assign users
+Store information about resource pools in Postgres. Create a dedicated service that will expose an API that will allow admins to create resource pools, modify them or assign users
 to different resource pools.
 
-Resource pools are enforced with [k8s resource qutoas](https://kubernetes.io/docs/concepts/policy/resource-quotas/). 
+Resource pools are enforced with [k8s resource quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/). 
 When an admin creates a resource pool they do the following:
 - create a k8s resource quota
 - create a k8s priority class that is connected to the quota
 - optionally specify which nodes (by label) should be preferred for this resource pool
 - optionally provide a taint toleration to be used for this resource pool (the admin is expected to taint the nodes themselves)
-- create an entry in postgres that identifies the k8s quota and namespace
-- create entries in postgres that identify the speicfic resource classes for the resource pool
+- create an entry in Postgres that identifies the k8s quota and namespace
+- create entries in Postgres that identify the specific resource classes for the resource pool
 
 ### Isolating workloads in k8s
 
@@ -67,26 +64,26 @@ Different modes of operation:
   - sessions can be scheduled on any default or untainted session node (subject to resource availability and node sizes)
   - resource quotas still apply (based on priority class)
   - no guarantee which node exactly will be used for the session
-  - there is absolutely no connection between resource pools and k8s nodes
+  - there is no connection between resource pools and k8s nodes
 
 2. Node taints and toleration, but no affinities
-  - sessions can be scheduled on the default pool, tained nodes or any other untainted nodes that "fit"
+  - sessions can be scheduled on the default pool, tainted nodes or any other untainted nodes that "fit"
   - resource quotas still apply (based on priority class)
   - no guarantee which node exactly will be used for the session
 
 3. Nodes taints, tolerations and affinities
   - assuming affinities are `PreferredDuringSchedulingIgnoredDuringExecution`
-  - session will attempt to be scheduled on the specific nodes
+  - the session will attempt to be scheduled on the specific nodes
   - if specific nodes are full then the session can be scheduled anywhere else that fits
   - resource quotas still apply
 
-In almost all cases it can happen that a session is scheduled on an untainted node/resource pool that is not strictly
-related to the resource pool that the user was "targeting". In this case the request quota from the targeted resource
+In almost all cases a session may be scheduled on an untainted node/resource pool that is not strictly
+related to the resource pool that the user was "targeting". In this case, the request quota from the targeted resource
 pool is consumed.
 
 ### Resource pool definition
 
-This is a YAML representation of the data that would be stored in postgres.
+This is a YAML representation of the data that would be stored in Postgres.
 
 ```yaml
 - name: default
@@ -152,11 +149,10 @@ flowchart TD
 
 ### Interface for creating and assigning resource pools
 
-A lot of complications can occur from how the admins are expected to manage resource pools. Ideally a 
-very simple UI is available.
+A lot of complications can occur from how the admins are expected to manage resource pools. Ideally, a very simple UI is available.
 
-Specifying these things through a helm chart values is tricky because validation is complicated and feedback
-to the admin cannot be easily relayed. For example, the admin specifies an invalid configuration in a configmap
+Specifying these things through helm chart values is tricky because validation is complicated and feedback
+to the admin cannot be easily relayed. For example, the admin specifies an invalid configuration in a Configmap
 or a helm chart. They deploy things and now they have caused the resource control service to crash. The admin
 now has to look through logs to find the reason and correct it.
 
