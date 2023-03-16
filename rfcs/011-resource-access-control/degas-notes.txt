@@ -1,0 +1,31 @@
+- k8s -> Kubernetes
+- Helm should set up the quotas etc
+- Reword the "modes of operation" section
+- Resource pool definition representation should be in tables and more abstract
+- the association of user to pool should be independent from pools definition
+- what purpose does it have to define "classes" in the pool definition? Is it only to show the user what they can request?
+
+- Definition of pools workflow in Helm values:
+ (mandatory)
+ - quota for default pool
+ (optional)
+  - list of nodes
+  - label
+  - taints
+ (optional)
+ - quota for any additional pool
+  (optional)
+  - list of nodes
+  - label
+  - taints
+- Helm sets up:
+ - quotas
+ - priority class
+ - labels
+ - taints
+
+The service wants to answer two questions:
+ - which _class_ of resources can a user access
+ - if the user can have the resources that they request
+
+Who should the service ask these questions? PG or K8s?

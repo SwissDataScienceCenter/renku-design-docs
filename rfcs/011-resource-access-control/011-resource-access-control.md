@@ -77,7 +77,7 @@ Different modes of operation:
   - if specific nodes are full then the session can be scheduled anywhere else that fits
   - resource quotas still apply
 
-In almost all cases a session may be scheduled on an untainted node/resource pool that is not strictly
+In almost (#TODO: which cases it doesn't?) all cases a session may be scheduled on an untainted node/resource pool that is not strictly
 related to the resource pool that the user was "targeting". In this case, the request quota from the targeted resource
 pool is consumed.
 
