@@ -260,12 +260,12 @@ A table showing how the different approaches compare is shown below:
 
 |                                                | Ssh port exposed by session directly | Proxy jumphost    | MITM Proxy         | OAuth2/OIDC       |
 |------------------------------------------------|--------------------------------------|-------------------|--------------------|-------------------|
-| Efficient IP address usage                   | :x:                                   | :heavy_check_mark | i:heavy_check_mark | :heavy_check_mark |
-| Login controlled by Renku                    | :x:                                   | :x:                | :heavy_check_mark  | :heavy_check_mark |
-| Flexible monitoring support                  | :x:                                   | :x:                | :heavy_check_mark  | :x:                |
-| Key management responsibilities with users   | :x:                                   | :heavy_check_mark | :heavy_check_mark  | :x:                |
-| Increased complexity of components to manage | :x:                                   | :x:                | :x:                 | :heavy_check_mark |
-| Control over session to ssh name             | :x:                                   | :heavy_check_mark | :heavy_check_mark  | :heavy_check_mark |
+| Efficient IP address usage                   | :x:                                   | :heavy_check_mark: | i:heavy_check_mark: | :heavy_check_mark: |
+| Login controlled by Renku                    | :x:                                   | :x:                | :heavy_check_mark:  | :heavy_check_mark: |
+| Flexible monitoring support                  | :x:                                   | :x:                | :heavy_check_mark:  | :x:                |
+| Key management responsibilities with users   | :x:                                   | :heavy_check_mark: | :heavy_check_mark:  | :x:                |
+| Increased complexity of components to manage | :x:                                   | :x:                | :x:                 | :heavy_check_mark: |
+| Control over session to ssh name             | :x:                                   | :heavy_check_mark: | :heavy_check_mark:  | :heavy_check_mark: |
 
 ## Proposed Solution
 
