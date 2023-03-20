@@ -57,7 +57,7 @@ to associate user sessions to resource pools.
 
 ![Basic architecture diagram](./overall-flow.png)
 
-### The Resource Access Control service
+### The Resource Access Control Service
 
 The service exposes an HTTP API that the administrators interact with to create/update/delete resource pools and
 add/remove users to resource pools.
@@ -303,7 +303,7 @@ In those cases, we rely on the `affinity` and `taint/toleration` mechanisms from
 administrator will take care of:
  - (optional) Setting a label on the nodes dedicated to the resource pool
  - Setting a taint on the nodes dedicated to the resource pool
- - Specify toleration and (optionally) a label when creating/updating the resource pool associated to the nodes
+ - Specify toleration and (optionally) a label when creating/updating the resource pool associated with the nodes
 
 The above will result in three different modes of operation:
 
@@ -318,68 +318,16 @@ The above will result in three different modes of operation:
   - resource quotas still apply (based on priority class)
   - no guarantee which node exactly will be used for the session
 
-3. Nodes taints/tolerations and affinities
+3. Preferred Nodes taints/tolerations and affinities
   - assuming affinities are `PreferredDuringSchedulingIgnoredDuringExecution`
   - the session will attempt to be scheduled on the specific nodes
   - if specific nodes are full then the session can be scheduled anywhere else that fits
   - resource quotas still apply
 
-In almost (#TODO: which cases it doesn't?) all cases a session may be scheduled on an untainted node/resource pool that is not strictly
-related to the resource pool that the user was "targeting". In this case, the request quota from the targeted resource
-pool is consumed.
-
-### Resource pool definition
-
-This is a YAML representation of the data that would be stored in Postgres.
-
-```yaml
-- name: default
-  classes:
-    - name: small
-      cpu: 1
-      memory: 1Gi
-      gpu: 0
-    - name: large
-      cpu: 2
-      memory: 2Gi
-      gpu: 0
-- name: pool1
-  taint: pool1  # optional
-  affinity: pool1  # optional
-  quota:
-    cpu: 10
-    memory: 10Gi
-    gpu: 10
-  classes:
-    - name: small
-      cpu: 0.5
-      memory: 250Mi
-      gpu: 0
-    - name: large
-      cpu: 2
-      memory: 6Gi
-      gpu: 1
-  users:
-    - user1
-    - user2
-- name: pool2
-  quota:
-    cpu: 100
-    memory: 100Gi
-    gpu: 0
-  classes:
-    - name: small
-      cpu: 1
-      memory: 1Gi
-      gpu: 0
-    - name: large
-      cpu: 4
-      memory: 8Gi
-      gpu: 0
-  users:
-    - user10
-    - user11
-```
+4. Required Nodes taints/tolerations and affinities
+  - assuming affinities are `RequiredDuringSchedulingIgnoredDuringExecution`
+  - the session will attempt to be scheduled on the specific nodes
+  - if specific nodes are full then the session will not be scheduled anywhere else
 
 ### Launching a session
 
@@ -393,42 +341,41 @@ flowchart TD
     IsAllowed --> |No| NotAllowed[Fail and inform user]
     PoolSetup --> RunPool[Start session<br>in resource pool]
 ```
-
-### Interface for creating and assigning resource pools
-
-A lot of complications can occur from how the administrators are expected to manage resource pools. Ideally, a very simple UI is available.
-
-Specifying these things through helm chart values is tricky because validation is complicated and feedback
-to the admin cannot be easily relayed. For example, the admin specifies an invalid configuration in a <admin interface>
-or a helm chart. They deploy things and now they have caused the resource control service to crash. The admin
-now has to look through logs to find the reason and correct it.
-
-Allowing resource pools to be specified and modified only through a simple admin-only UI console avoids this problem.
-The admin UI console can be a fully separate single-page application from Renku. The gateway can guard the static
-resources for the console such that only authenticated administrators can access them. 
-
 ## Drawbacks
 
-> Why should we *not* do this? Please consider the impact on users,
-on the integration of this change with other existing and planned features etc.
+This solution proposes to introduce a new service: it will inherently increase the complexity of the project both in the
+development phase (coding, testing, releasing) as well as the operations (availability, scaling, performance).
 
-> There are tradeoffs to choosing any path, please attempt to identify them here.
+Additionally, the service will rely on the Postgres instance that we deploy alongside Renkulab as the backend, using a new
+database, thus increasing Renkulab's dependency on Postgres.
 
 ## Rationale and Alternatives
 
-> Why is this design the best in the space of possible designs?
+This design provides a robust and reliable interface for the Renkulab administrator to manage the user access to the
+resources and the resource definitions as well. It also provides a solid foundation to build upon more feature that
+concerns the Renkulab administrator, providing an interface that will evolve with time but should remain familiar.
 
-> What other designs have been considered and what is the rationale for not choosing them?
+Other designs revolved around appending the information about users' access and resource pools to existing entities in
+Renkulab (ConfigMaps, Keycloak metadata etc...). Those designs have all the drawbacks of not providing an easy interface
+for the administrator to understand mistakes and issues with the configuration.
 
-> What is the impact of not doing this?
+This feature is essential to reduce the spread of Renkulab.io instances that the SDSC maintains because many of those
+exist solely to dedicate compute resources to specific groups.
+
+Consolidating the Renkulab deployments has also the benefit of allowing data scientists from different groups to share
+their work across a single deployment.
 
 ## Unresolved questions
 
-> What parts of the design do you expect to resolve through the RFC process 
-before this gets merged?
+How to access the administrator interface and how it should look will have to be addressed in the context of
+discussing this RFC.
 
-> What parts of the design do you expect to resolve through the implementation 
-of this feature before stabilisation?
+The programming language chosen for the HTTP service and its dependencies will be chosen at the moment of implementation.
+At the time of implementation, some considerations on the required network policies so that the service can access Postgres
+will be needed.
 
-> What related issues do you consider out of scope for this RFC that could be 
-addressed in the future independently of the solution that comes out of this RFC?
+The problem addressed by this RFC is somewhat related to the topic of cross-cluster resource sharing.
+Once this RFC will be addressed, it will be realistic to add to a cluster that hosts a public instance of Renkulab
+(e.g. Renkulab.io) some nodes that belong to a research group and that, through the implementation of this
+RFC, will be able to access exclusively to address their computational needs while sharing the other resources with the
+other users.
