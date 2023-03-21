@@ -62,230 +62,7 @@ to associate user sessions to resource pools.
 The service exposes an HTTP API that the administrators interact with to create/update/delete resource pools and
 add/remove users to resource pools.
 
-A prototype of the API exposed by the service looks like the following:
-```yaml
-openapi: 3.0.2
-info:
-  title: Renku user service
-  description: User service with compute resource access control for Renku
-  version: v1
-servers:
-  - url: /api/compute
-paths:
-  
-  /resourcePools:
-    get:
-      summary: Get all resource pool definitions
-      responses:
-        '200':
-          description: The resource pool definition
-        '404':
-          description: The resource pool does not exist
-      tags:
-        - resourcePools
-    post:
-      summary: Create a resource pool
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object 
-              required:
-                - id
-              properties:
-                id:
-                  type: string
-      responses:
-        '201':
-          description: The resource pool was created
-      tags:
-        - resourcePools
-  /resourcePools/{resourcePoolId}:
-    get:
-      summary: Get a resource pool definition
-      parameters:
-        - in: path
-          name: resourcePoolId
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The resource pool definition
-        '404':
-          description: The resource pool does not exist
-      tags:
-        - resourcePools
-  /resourcePools/{resourcePoolId}/classes:
-    get:
-      summary: Get all resource classes in a resource pool
-      parameters:
-        - in: path
-          name: resourcePoolId
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The resource class in the specific pool
-        '404':
-          description: The resource pool or class does not exist
-      tags:
-        - classes
-  /resourcePools/{resourcePoolId}/classes/{classId}:
-    post:
-      summary: Create a resource class in the specific pool
-      parameters:
-        - in: path
-          name: resourcePoolId
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: classId
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object 
-              required:
-                - id
-              properties:
-                id:
-                  type: string
-      responses:
-        '201':
-          description: Created a class in the resource pool
-        '404':
-          description: The resource pool does not exist
-      tags:
-        - classes
-  /resourcePools/{resourcePoolId}/users:
-    get:
-      summary: Get all users that have access to a resource pool
-      parameters:
-        - in: path
-          name: resourcePoolId
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The list of users
-        '404':
-          description: The resource pool does not exist
-      tags:
-        - users
-    post:
-      summary: Set the list of users that have access to a resource pool
-      parameters:
-        - in: path
-          name: resourcePoolId
-          required: true
-          schema:
-            type: string
-      requestBody:
-        description: List of user Ids
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: string
-              required:
-                - id
-      responses:
-        '201':
-          description: The list of users was set
-        '404':
-          description: The resource pool does not exist
-      tags:
-        - users
-    put:
-      summary: Append to the list of users that have access to a resource pool
-      parameters:
-        - in: path
-          name: resourcePoolId
-          required: true
-          schema:
-            type: string
-      requestBody:
-        description: List of user Ids
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: string
-              required:
-                - id
-      responses:
-        '201':
-          description: The list of users was updated
-        '404':
-          description: The resource pool does not exist
-      tags:
-        - users
-  /resourcePools/{resourcePoolId}/users/{userId}:
-    get:
-      summary: Check if a specific user belongs to a specific resource pool
-      parameters:
-        - in: path
-          name: resourcePoolId
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The user belongs to the resource pool
-        '404':
-          description: The user does not belong to the resource pool, or the resource pool or user do not exist
-      tags:
-        - users
-  /resourcePools/{resourcePoolId}/quota:
-    get:
-      summary: Get the quota associated with the resource pool
-      parameters:
-        - in: path
-          name: resourcePoolId
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The user belongs to the resource pool
-        '404':
-          description: The resource pool or user does not exist
-      tags:
-        - quota
-    post:
-      summary: Set the quota associated with the resource pool
-      parameters:
-        - in: path
-          name: resourcePoolId
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The user belongs to the resource pool
-        '404':
-          description: The resource pool or user does not exist
-      tags:
-        - quota
-```
+A prototype of the API exposed by the service can be seen in the attached file: [api-prototype](./api-prototype.yaml)
 
 From the above API, it is clear that the service needs to be able to create `ResourceQuota` and `PriorityClass` resources
 in the Kubernetes cluster and create the association between users and resource pools in the Postgres database.
@@ -293,6 +70,34 @@ in the Kubernetes cluster and create the association between users and resource 
 A non-essential feature would include a dedicated web page where the Renkulab administrator can log in and interact with
 the above API through a user interface.  The interface would also surface errors reported from the API which verifies if
 the passed request is possible.
+
+### Database structure
+
+The database serving as the backend to the Resource Access Control service will have four tables:
+
+```
+Quota:
+ - CPU
+ - memory
+ - GPU
+ - storage
+
+Resource class:
+ - name
+ - CPU
+ - memory
+ - GPU
+ - storage
+
+Resource pool:
+ - name
+ - classes (list of references to resource class)
+ - quota (reference to Quota)
+
+User:
+ - Keycloak ID
+ - pools (list of references to resource pools the user has access to)
+```
 
 ### Advanced resource pools management
 
