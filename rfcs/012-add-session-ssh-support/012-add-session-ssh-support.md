@@ -313,15 +313,16 @@ keys used for login and the user session.
 
 ### Mapping between ssh login and Renku user session
 
-Given that a single ssh pubkey could apply to more than one Renku session, it
-is not realistic to use the ssh key itself as the mechanism which maps the
-ssh session to the Renku user session; this means it is not possible to have
-a solution in which the login is `ssh Renku@<ssh-proxy>` and the session is
-uniquely identified by the ssh key. The most straightforward solution is one
-in which the username maps uniquely to a Renku user session.
+Given that multiple Renku sessions could potentially use the same (user) ssh
+public key, it is not possible to use the ssh key itself as the mechanism
+which maps the ssh session to the Renku user session; this means it is not
+possible to have a solution in which the login is `ssh renku@<ssh-proxy>` and
+the session is uniquely identified by the ssh key. The most straightforward
+solution is one in which the username maps uniquely to a Renku user session.
 
-A mechanism is then required which maps ssh username and ssh public key to a
-Renku user session.
+A mechanism is then required which maps ssh username to a Renku user session
+and the ssh challenge is successful using one of the user's registered ssh
+public keys.
 
 ### Session creation
 
@@ -356,17 +357,31 @@ The Renku data store will support CRUD operations for key management.
 
 ### Illustration of the processes
 
-...add mermaid diagrams here...
+Creation of a Renku session:
 
 ```mermaid
 flowchart TD
-    Launch[Launch a session] --> Access{Is the user requesting a<br>non-default resource pool?}
-    Access --> |Yes| CheckAccess[Get resource pools for user]
-    Access --> |No| Run[Start session<br>with default resource pool]
-    CheckAccess --> IsAllowed{Is the user allowed<br>to use the resource pool?}
-    IsAllowed --> |Yes| PoolSetup[Add optional node affinity<br>Add optional toleration<br>Add priority]
-    IsAllowed --> |No| NotAllowed[Fail and inform user]
-    PoolSetup --> RunPool[Start session<br>in resource pool]
+    Launch[Launch a session] --> NotebookCreatesServer[Renku notebook service creates JupyterServer]
+    NotebookCreatesServer --> RenkuDataStoreNotified[Renku Data Store watcher updates list of active sessions with ssh username, renku session and user id]
+```
+
+Termination of a Renku session:
+
+```mermaid
+flowchart TD
+    Terminate[Terminate a session] --> NotebookTerminatesServer[Renku notebook service deletes JupyterServer object]
+    NotebookTerminatesServer --> RenkuDataStoreNotified[Renku Data Store removes session from list of active sessions]
+```
+
+Login to Renku session:
+
+```mermaid
+flowchart TD
+    SshInitiated["User attempts ssh login with ssh session-name@renkulab.io"] --> RenkuSshProxyReceivesSshConnectionRequest["Renku SSH Proxy receives session initiation request"]
+    RenkuSshProxyReceivesSshConnectionRequest --> RenkuSshProxyGetsRenkuSessionInfo["Renku SSH Proxy queries Renku Data Store for session, user and valid key(s)"]
+    RenkuSshProxyGetsRenkuSessionInfo --> RenkuSshProxyDetermineIfKeyValid{"Renku SSH Proxy determines if the private key <br> used to initiate the session matches (one of) <br> the available public keys"}
+    RenkuSshProxyDetermineIfKeyValid --> |No| SshPermissionDenied["SSH Permission Denied"]
+    RenkuSshProxyDetermineIfKeyValid --> |Yes| SshConnectionProxied["SSH Proxies connection to renku-session"]
 ```
 
 ### Required modifications to Renku
@@ -374,14 +389,15 @@ flowchart TD
 The following modifications to Renku will also be required:
 - API:
   - CRUD operations on public keys for logged in user
+- Renku Data Store service
+  - Support storage of ssh keys bound to users
+  - Support queries linking ssh-username, renku-session name, user-id and valid user ssh keys
+  - Add watcher which tracks running Jupyter Servers and adds them to currently active sessions
 - CLI
   - Push public key for logged in user (check if it is valid public key)
   - Create keypair locally, put key in appropriate folder and push public key
   - Perform some validation of key setup without needing to launch a user session
     - (probably needs to have an endpoint which is always available in the absence of a session) 
-  - For OIDC modus:
-    - Support generation of token for logged in user
-    - Support combined token generation and login via pty?
     - Support login with token generated via web browser
 - UI
   - Import public key for logged in user (check if it is valid public key)
