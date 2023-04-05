@@ -1,15 +1,10 @@
 # Support RenkuLab compute access from local terminal (SSH) & VSCode
 
-Authors: Laura Kinkead
-Build Dates: January 16, 2023 → March 10, 2023
-Created by: Laura Kinkead
-Opportunity: https://www.notion.so/I-want-to-work-on-my-own-machine-f0a9b3baca7743bc897c13fdf4b30a1c
-Priority: 🔴 Must Have
-Related Tech Topics: https://www.notion.so/2c27d2b88bf74d98a3f582cdf2cd9ec8, https://www.notion.so/7a48e271195c4255b32b204994167cc0
-Size: 🌿 Medium
-Status: ✅ Completed
-Tags: CLI
-Team: RP, UI, YAT
+* Authors: Laura Kinkead
+* Created by: Laura Kinkead
+* Priority: 🔴 Must Have
+* Tags: CLI
+* Build Dates: January 16, 2023 → March 10, 2023
 
 ---
 
@@ -19,11 +14,9 @@ Many data scientists work in VSCode as their main editor. They use the SSH exten
 
 Some sample user research from interviews:
 
-* I love VSCode
-
-* Connecting to a RenkuLab Session from VSCode would unify my workflow!
-
-* Using VSCode with a VM is almost like seamless! So mostly I work like that
+* _I love VSCode_
+* _Connecting to a RenkuLab Session from VSCode would unify my workflow!_
+* _Using VSCode with a VM is almost like seamless! So mostly I work like that_
 
 # 🍴 Appetite
 
@@ -42,7 +35,7 @@ From the user point of view, starting a ssh session on RenkuLab should involve o
 1. Launch a session on RenkuLab resources from their local terminal via the `renku session start` command
 2. Click on the ssh connect button in VSCode that is provided by the VSCode ssh extension to open the session in VSCode.
 
-- An *example* workflow is written out inside this drop down. However, the specific implementation is up to the Build Team! The final design does not need to match this workflow exactly, it’s just a starting point for thinking through how this could work.
+- An *example* workflow is written out below. However, the specific implementation is up to the Build Team! The final design does not need to match this workflow exactly, it’s just a starting point for thinking through how this could work.
     
     **One-Time Initial Set Up** - the user does this one time per project
     
@@ -71,9 +64,7 @@ From the user point of view, starting a ssh session on RenkuLab should involve o
 
 ### Making the Project Session SSH-Compatible
 
-We add ssh to the project base image.
-
-- (Needs SSH server installed and configured, looks for public key in repo and transfers to appropriate location, or knows where to look, etc…)
+We add ssh to the project base image. (We need the SSH server installed and configured, which looks for public key in repo and transfers to appropriate location, or knows where to look, etc…)
 - Question for Build Team: Is the SSH server *started* on every session, or only ones where it’s requested?
 
 ### Communicating which projects are SSH-enabled to users
@@ -85,9 +76,9 @@ Enabling SSH connection into a session requires a change to the project docker i
 - Project → Overview → Status → Update Template
 - Note: When we release a new version of the base image, and update the template file, users will get a notification on this status page to update to the newer base image.
 
-*How does the user **know** whether the project is SSH-enabled?*
+_How does the user **know** whether the project is SSH-enabled?_
 
-We have some options here, and I’ve listed a few I’ve come up with so far in the drop down. It is up to the build team to decide which of these options - or other alternatives! - to implement.
+We have some options here, and I’ve listed a few I’ve come up with so far below. It is up to the build team to decide which of these options - or other alternatives! - to implement.
 
 - Project SSH Status Indicator Options
     1. Show “Start a session from SSH” option in the Session Start drop down menu, next to “Start with options”. If the project is SSH enabled, the button links you to docs on how to start an SSH session. If project is not SSH enabled, it links you to docs on how to enable ssh for your project.
@@ -115,11 +106,11 @@ We have some options here, and I’ve listed a few I’ve come up with so far in
         → Bad: … though eventually most projects will be SSH-enabled anyway, as new projects are created, so eventually this ends up with hardly any less clutter than if there were an icon everywhere.
         
 
-******************************How does the **front-end know** whether the project is SSH enabled?*
+_How does the **front-end know** whether the project is SSH enabled?_
 
 The front end can tell if the project is SSH-enabled by checking the template version. 
 
-Note: If we want to make this info available on a project listing (not just on the project page), then may require KG.
+Note: If we want to make SSH info available on a project listing (not just on the project page), then may require KG.
 
 Nice to Have: add `ssh-enabled` flag in the template manifest.
 
@@ -152,7 +143,7 @@ We will have 1 session with ssh support on the project per user, so the url stay
 
 Amalthea will simply create another ingress that is well formed like this in addition to the usual name. On a server launch if this ssh-friendly ingress exists the session launch will be aborted.
 
-(FYI This isn’t even a tradeoff, because [Make autosaves not be so bad](https://www.notion.so/Make-autosaves-not-be-so-bad-120264b524ce45d485d407c14a597fb6) is going to restrict sessions to one per project/user anyway)
+(FYI This isn’t even a tradeoff, because the upcoming 'Make autosaves not be so bad' pitch is going to restrict sessions to one per project/user anyway)
 
 # 🙅‍♀️ No-gos
 
@@ -169,28 +160,3 @@ For the scope of this pitch, we only care about having this functionality live o
 2. User gets a link/credentials/ssh config of some sort
 3. User pastes these credentials into VSCode ssh connect
 4. … ?
-    
-
-### Screenshots of the figma design work in progress… (including information from the issue #2324)
-
-****[lorenzo-cavazzi](https://github.com/lorenzo-cavazzi) commented [3 days ago](https://github.com/SwissDataScienceCenter/renku-ui/issues/2324#issuecomment-1413469186)**
-
-We agreed on showing a new "SSH" option on the "Start" button that opens a modal.The content includes links to documentation and how to enable the project to support SSH (or how to proceed).
-
----
-
-![Untitled](Support%20RenkuLab%20compute%20access%20from%20local%20termina%20f896d3b391c94bcc87c56e375eb531d6/Untitled.png)
-
-![Untitled](Support%20RenkuLab%20compute%20access%20from%20local%20termina%20f896d3b391c94bcc87c56e375eb531d6/Untitled%201.png)
-
-## 
-
-SSH Project Status Indicator , label ideas for the ssh support
-
-![Untitled](Support%20RenkuLab%20compute%20access%20from%20local%20termina%20f896d3b391c94bcc87c56e375eb531d6/Untitled%202.png)
-
-here is an example of the design template for the modal. Could someone please send me screenshots or links for the information that should be displayed on it ? ..
-
-![Untitled](Support%20RenkuLab%20compute%20access%20from%20local%20termina%20f896d3b391c94bcc87c56e375eb531d6/Untitled%203.png)
-
-![Screenshot 2023-02-27 at 16.31.22.png](Support%20RenkuLab%20compute%20access%20from%20local%20termina%20f896d3b391c94bcc87c56e375eb531d6/Screenshot_2023-02-27_at_16.31.22.png)
