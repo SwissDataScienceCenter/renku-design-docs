@@ -282,7 +282,7 @@ A table showing how the different approaches compare is shown below:
 | Keys linked to user rather than project        | :x:                                  | :x:                | :heavy_check_mark:  | N/A |
 | Flexible monitoring support                    | :x:                                  | :x:                | :heavy_check_mark:  | :heavy_check_mark:                |
 | Key management responsibilities with users     | :heavy_check_mark:                   | :heavy_check_mark: | :heavy_check_mark:  | :x:                |
-| New Renku components to be developed/supported | :x:                                  | :x:                | :heavy_check_mark:  | :heavy_check_mark: |
+| Implementation possible without developing new components | :heavy_check_mark:        | :heavy_check_mark: | :x:                 | :heavy_check_mark: |
 
 Based on the above comparison, the MITM proxy has the best fit with the requirements
 even though it requires the development of a dedicated, if modest component as
