@@ -171,16 +171,19 @@ keypair must be deployed to the proxy and/or user session.
 
 The most natural solution in this case is to use the user's public key within
 the session and have open access with no ability to obtain a shell within the
-jumphost. Key management then becomes a user responsibility, with users having
-to do this within their Renku projects; as such, keys are project entities,
-rather than user entities.
+jumphost. This can be achieved in a sstraightforward manner today by adding
+user public keys to their projects which then get picked up in the user
+sessions. This approach effectively binds keys to projects. It is also
+possible to envisage an approach in which the keys could be retrieved from a
+service which persists SSH keys enabling keys to be bound to users rather than
+projects.
 
-In this case, the basic command to ssh into a session is more complex, requiring
-specification of both the jumphost and the destination; this is straightforward to
-deal with from the user perspective by adding entries to the ssh config for the
-sessions such that the users can simply enter the session name and the ssh
-config contains the necessary username, key, proxy and hostname. VS code can
-use the same information.
+In this case, the command to ssh into a session is more complex than the basic
+ssh command, requiring specification of both the jumphost and the destination;
+this is straightforward to deal with from the user perspective by adding
+entries to the ssh config for the sessions such that the users can simply enter
+the session name and the ssh config contains the necessary username, key, proxy
+and hostname. VS code can use the same information.
 
 ### Using a Man In the Middle (MITM) Proxy solution
 
@@ -279,7 +282,7 @@ A table showing how the different approaches compare is shown below:
 |------------------------------------------------|--------------------------------------|-------------------|--------------------|-------------------|
 | VS Code support                                | :heavy_check_mark:                   | :heavy_check_mark: | :heavy_check_mark: | :x: |
 | Efficient IP address usage                     | :x:                                  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Keys linked to user rather than project        | :x:                                  | :x:                | :heavy_check_mark:  | N/A |
+| Keys linked to user rather than project        | :x:                                  | Possible           | :heavy_check_mark:  | N/A |
 | Flexible monitoring support                    | :x:                                  | :x:                | :heavy_check_mark:  | :heavy_check_mark:                |
 | Key management responsibilities with users     | :heavy_check_mark:                   | :heavy_check_mark: | :heavy_check_mark:  | :x:                |
 | Implementation possible without developing new components | :heavy_check_mark:        | :heavy_check_mark: | :x:                 | :heavy_check_mark: |
@@ -304,7 +307,7 @@ public key, it is not possible to use the ssh key itself as the mechanism
 which maps the ssh session to the Renku user session; this means it is not
 possible to have a solution in which the login is `ssh renku@<ssh-proxy>` and
 the session is uniquely identified by the ssh key. The most straightforward
-solution is one in which the username maps uniquely to a Renku user session.
+solution is one in which the ssh username maps uniquely to a Renku user session.
 
 A mechanism is then required which maps ssh username to a Renku user session
 and the ssh challenge is successful using one of the user's registered ssh
@@ -315,12 +318,13 @@ public keys.
 The standard approach to session creation occurs in which the Renku notebooks
 service creates a `JupyterServer` CRD.
 
-In this case, however, a Kubernetes watcher listens for creation and deletion
-of these CRDs and updates a database accordingly. This database keeps track of
-the current set of active sessions and is used to support queries which map
-ssh username to keypair and Renku session. (This database can easily be 
-modified/augmented to support querying of historical data relating to Renku
-sessions).
+This needs to be augmented with an additional mechanism which persists session
+information to a database which can then be queried easily (a side effect of
+this is that there will be a persisted record of session creation and
+termination). Here, a Kubernetes watcher should listen for creation and
+deletion of these CRDs and update a database accordingly. This database keeps
+track of the current set of active sessions and is used to support queries
+which map ssh username to keypair and Renku session.
 
 More specifically, the database table will contain the following three elements:
 - keycloak-user-id
