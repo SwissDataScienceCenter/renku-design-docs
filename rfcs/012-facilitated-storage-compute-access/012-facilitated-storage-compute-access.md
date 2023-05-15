@@ -30,10 +30,14 @@ In this process, renkulab can act as an interactive platform. The resources can 
 
 Some example services include:
 
-* WebDAV storage with OIDC or OIDC-to-certificate mapping
-* [rucio](https://github.com/rucio/rucio) bulk archive
-* EGI/[ARC](http://www.nordugrid.org/arc/) cluster
-* custom compute MMODA API https://www.astro.unige.ch/mmoda/
+* storage:
+    * WebDAV storage with OIDC or OIDC-to-certificate mapping
+    * [rucio](https://github.com/rucio/rucio) bulk archive
+    * CSCS [object storage](https://user.cscs.ch/storage/object_storage/) 
+* compute
+    * EGI/[ARC](http://www.nordugrid.org/arc/) cluster
+    * [DIRAC](https://github.com/DIRACGrid/DIRAC) cluster
+    * custom compute MMODA API https://www.astro.unige.ch/mmoda/
 
 
 > Can we distinguish between essential requirements and 'nice to have' requirements
