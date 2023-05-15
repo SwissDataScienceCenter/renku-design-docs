@@ -7,26 +7,27 @@
 
 > One paragraph explanation of the change.
 
-In the context of large astrophysical projects, it is often necessary to access astronomical data archives and computing resources (e.g. grid-like clusters).
+In the context of large astrophysical projects, it is often necessary to access astronomical data archives (S3, various block storage, WebDAV, etc) and computing (e.g. dask, ARC, reana, slurm, etc) resources and services. Almost all of these interfaces built upon HTTP and rely on OpenID Connect.
 
-One of the key benefits of interactive data analysis and exporation platforms like jupyterhub (and, hopefully, renkulab) is that it is possible to facilitate access to data and computing resources. 
+One of the recongised benefits of interactive data analysis and exporation platforms like jupyterhub (and, hopefully, renkulab) is that it is possible to facilitate access to these resources.
 
-Often these resources are located close to the platform, saving on data transfer costs.
+Interactive platform may allow users to discover these services, with various complementary UI features. 
 
 Since access to these resources is typically restricted, it is possible to rely the identity of the users logged in the interactive session to enable access to the resources without any additional authentication.
 
+Often these resources can be located close to the platform, saving on data transfer costs, enabling the "bright code to the data" approach.
+
 ## Problem Statement
 
-> Why are we doing this? What use cases does it support? What is the expected
-outcome?
+> Why are we doing this? What use cases does it support? What is the expected outcome?
 
-This will enable users of large astronomical infrastractures to easily access their data archives and computing clusters from renkulab, making renkulab much more attractive for them. 
+This will enable users of astronomical infrastructures to easily access their data archives and computing clusters from renkulab, making renkulab much more attractive for them. 
 
-A typical data-intensive astronomer life cycle is like so:
+A typical data-intensive astronomer life cycle can be outline like so:
 
 * query a large private data archive to discover and select datasets
 * fetch small datasets from the private data archive and explore them interactively
-* submit processing of the datasets to private computing cluster (could be dask, ARC, reana, slurm, etc) storing the results in private storage
+* submit processing of the datasets to private computing cluster storing the results in private storage
 * fetch some results to interactive session, explore and visualize them 
 
 > Can we distinguish between essential requirements and 'nice to have' requirements
