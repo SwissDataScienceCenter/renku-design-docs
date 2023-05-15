@@ -78,9 +78,10 @@ on the integration of this change with other existing and planned features etc.
 
 Interfaces to storage and compute backends proposed in this RFC would be specialized, useful to different individual project. In principle this may lead to numerous project-specific and domain-specific interfaces which will be difficult to support on single renkulab instance. 
 
-Second possible solution, just storing credentials, is more favorable in this respect, but still requires storing 
+Second possible solution, just storing credentials, is more favorable in this respect, but still requires keeping track of some domain-specific external services.
 
 > There are tradeoffs to choosing any path, please attempt to identify them here.
+
 
 
 ## Rationale and Alternatives
@@ -91,7 +92,8 @@ Second possible solution, just storing credentials, is more favorable in this re
 
 > What is the impact of not doing this?
 
-When we need to access resouure
+Right now, when we need to access secured external resoure from renkulab, we need to manually copy the credentials into the session, and make sure they are not stored in the repository which would compromise them. This is cumbersome and potentially unsafe.
+When transferring large datasets to renkulab, we need to take care of transfer costs ourselves. It means that even moderately large data is usually not transferred to renkulab.
 
 ## Unresolved questions
 
