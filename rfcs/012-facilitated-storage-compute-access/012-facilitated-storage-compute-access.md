@@ -64,10 +64,16 @@ the case, these should be included here.
 Assumptions and Possible Solutions are discussed to explore the problem space
 as a lead in to defining the Proposed Solution.***
 
-* A possible soluton might be similar to "jupyterhub services" - specialized services deployed along with a jupyterhub instance. Jupyterhub provides a framework for sharing user account with these services.
+### A
+
+A possible soluton might be similar to "jupyterhub services" - specialized services deployed along with a jupyterhub instance. Jupyterhub provides a framework for sharing user account with these services.
 If similar solution is available in renkulab, it would be possible outsource development of specialized domain-specific compute and storage interfaces to domain-specific teams.
 
-* Another possible solution could be to allow users to access external compute and storage services directly from renku session without any additional domain-specific services near renku, using renku to store authorization for accessing external services associating it with user account.
+Renkulab would need to set some environment variables before the session start, specifying the service endpoints and possibly credentials.
+
+### B
+
+ Another possible solution could be to allow users to access external compute and storage services directly from renku session without any additional domain-specific services near renku, using renku to store authorization for accessing external services associating it with user account. Renkulab would then set some environment variables for the session, and they will be used by the user code.
 
 ## Proposed solution
 
