@@ -5,17 +5,13 @@
 
 ## Summary
 
-> One paragraph explanation of the change.
+> "One paragraph" explanation of the change.
 
-In the context of large astrophysical projects, it is often necessary to access astronomical data archives (S3, various block storage, WebDAV, etc) and computing (e.g. dask, ARC, reana, slurm, etc) resources and services. Almost all of these interfaces built upon HTTP and rely on OpenID Connect.
-
-One of the recongised benefits of interactive data analysis and exporation platforms like jupyterhub (and, hopefully, renkulab) is that it is possible to facilitate access to these resources.
-
-Interactive platform may allow users to discover these services, with various complementary UI features. 
-
-Since access to these resources is typically restricted, it is possible to rely the identity of the users logged in the interactive session to enable access to the resources without any additional authentication.
-
-Often these resources can be located close to the platform, saving on data transfer costs, enabling the "bright code to the data" approach.
+In modern astrophysical projects it is often necessary to access astronomical data archives (S3, various block storage, WebDAV, etc) and computing (e.g. dask, ARC, slurm, reana, etc) services. Most of the time, the access is through an interface built upon HTTP and relying on OpenID Connect for access control.
+One of the recongised benefits of interactive data analysis and exporation platforms like jupyterhub (and, hopefully, renkulab) is that it is possible to facilitate access to these resources in the following ways:
+* Interactive platform may allow users to discover these services, with various complementary UI features. 
+* Since access to these resources is typically restricted, it is possible to rely the identity of the users logged in the interactive session to enable access to the resources without any additional authentication.
+* Often these resources can be located close to the platform, saving on data transfer costs, enabling the "bright code to the data" approach.
 
 ## Problem Statement
 
@@ -29,6 +25,8 @@ A typical data-intensive astronomer life cycle can be outline like so:
 * fetch small datasets from the private data archive and explore them interactively
 * submit processing of the datasets to private computing cluster storing the results in private storage
 * fetch some results to interactive session, explore and visualize them 
+
+In this process, renkulab can act as an interactive platform. The resources can be accessed through an API. Forumulation of the request and substitution of authorization can be facilitated by renkulab.
 
 > Can we distinguish between essential requirements and 'nice to have' requirements
 
@@ -77,9 +75,9 @@ can be implemented in a reasonable amount of time.***
 > Why should we *not* do this? Please consider the impact on users,
 on the integration of this change with other existing and planned features etc.
 
-Interfaces to storage and compute backends proposed in this RFC would be specialized, useful to different individual project. In principle this may lead to numerous project-specific and domain-specific interfaces which will be difficult to support on single renkulab instance. 
+Interfaces to storage and compute backends proposed in this RFC would be specialized, useful to different individual projects, communities. In principle this may lead to numerous project-specific and domain-specific interfaces which will be difficult to support on single renkulab instance. 
 
-Second possible solution, just storing credentials, is more favorable in this respect, but still requires keeping track of some domain-specific external services.
+Second possible solution, just storing the credentials, is more favorable in this respect. It still implies, however, that renkulab is keeping track of multiple domain-specific external services and of the way the can be made available to the user session. So a lightweight "renkulab services" contributed by teams may still be benefitial to separate responsibility for these domain interfaces.
 
 > There are tradeoffs to choosing any path, please attempt to identify them here.
 
@@ -94,6 +92,7 @@ Second possible solution, just storing credentials, is more favorable in this re
 > What is the impact of not doing this?
 
 Right now, when we need to access secured external resoure from renkulab, we need to manually copy the credentials into the session, and make sure they are not stored in the repository which would compromise them. This is cumbersome and potentially unsafe.
+
 When transferring large datasets to renkulab, we need to take care of transfer costs ourselves. It means that even moderately large data is usually not transferred to renkulab.
 
 ## Unresolved questions
