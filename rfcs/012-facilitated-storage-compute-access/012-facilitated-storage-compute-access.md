@@ -28,6 +28,14 @@ A typical data-intensive astronomer life cycle can be outline like so:
 
 In this process, renkulab can act as an interactive platform. The resources can be accessed through an API. Forumulation of the request and substitution of authorization can be facilitated by renkulab.
 
+Some example services include:
+
+* WebDAV storage with OIDC or OIDC-to-certificate mapping
+* [rucio](https://github.com/rucio/rucio) bulk archive
+* EGI/[ARC](http://www.nordugrid.org/arc/) cluster
+* custom compute MMODA API https://www.astro.unige.ch/mmoda/
+
+
 > Can we distinguish between essential requirements and 'nice to have' requirements
 
 Nice to have feature would be to add features in the session UI to make it easier to start connection to the storage and compute services. For example, a button "fetch data from ESAC archive" or "run in Pulsar Network". Something similar is done in dask jupyterlab plugin.
