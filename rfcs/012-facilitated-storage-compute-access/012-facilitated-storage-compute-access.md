@@ -31,12 +31,12 @@ In this process, renkulab can act as an interactive platform. The resources can 
 Some example services include:
 
 * storage:
-    * WebDAV storage with OIDC or OIDC-to-certificate mapping
+    * WebDAV storage with OIDC
     * [rucio](https://github.com/rucio/rucio) bulk archive
     * CSCS [object storage](https://user.cscs.ch/storage/object_storage/) 
 * compute
-    * EGI/[ARC](http://www.nordugrid.org/arc/) cluster
-    * [DIRAC](https://github.com/DIRACGrid/DIRAC) cluster
+    * dask gateway
+    * EGI/[ARC](http://www.nordugrid.org/arc/) or [DIRAC](https://github.com/DIRACGrid/DIRAC) cluster
     * custom compute MMODA API https://www.astro.unige.ch/mmoda/
 
 
