@@ -13,16 +13,16 @@ Moreover, we want to improve the way we persist unsaved changes in a session whe
 The fundamental issue that this RFC is trying to address is to demystify what happens during session launch and to avoid
 situations that users end up in the state of a project which they do not expect. Primarily, the confusion is caused by
 us trying to do clever things with data which had been preserved when a session was closed, i.e. the notorious
-_autosave_. We use git to create autosave branches to persist unsaved changes/data in a session. Many things can go
+*autosave*. We use git to create autosave branches to persist unsaved changes/data in a session. Many things can go
 wrong by using git which makes this approach unreliable in addition to be confusing.
 
 ### Launching a Session
 
-We support two different flows of launching sessions in Renku: _Quickstart_ and _Options_. The _Quickstart_ flow is when
-users click on the **Play** button in a project. The _Options_ flow is when users click on the **New session** button in
-the project's _Sessions_ tab which then shows a list of options to start a session.
+We support two different flows of launching sessions in Renku: *Quickstart* and *Options*. The *Quickstart* flow is when
+users click on the **Play** button in a project. The *Options* flow is when users click on the **New session** button in
+the project's *Sessions* tab which then shows a list of options to start a session.
 
-What happens during the _Quickstart_ flow is completely opaque to users. Based on project's state we do one of the
+What happens during the *Quickstart* flow is completely opaque to users. Based on project's state we do one of the
 following three actions to launch a session:
 1. If there is a running session on the same branch, we redirect there directly
 2. If there is an autosave, we launch from there
@@ -36,7 +36,7 @@ different from what they expected.
 ### Autosave Branches
 
 When users close a session without committing or pushing changes, we create a branch to commit unsaved changes. This
-_autosave_ branch is then pushed to project's remote to be restored next time a session is launched. There are many
+*autosave* branch is then pushed to project's remote to be restored next time a session is launched. There are many
 issues with this approach of persisting session's state:
 
 - If the user has a lot of unsaved data we create a large autosave branch and have to make assumptions about what should
@@ -76,7 +76,7 @@ issues with this approach of persisting session's state:
 
 ### Summary
 
-The current implementation of _saving_ work when a hosted user session shuts down leads to confusion in the best-, and
+The current implementation of *saving* work when a hosted user session shuts down leads to confusion in the best-, and
 data loss in the worst-case scenarios. There is a need for a **workspace** in a project that users can come to where their
 data and progress are reliably stored.
 
@@ -94,11 +94,11 @@ should be going for is the UX of GitHub Codespaces.
 
 ### TL;DR of the Technical Proposal
 
-1. Rely on Permanent Volumes for saving session state 
+1. Rely on Permanent Volumes for saving session state.
 2. On session shutdown, transition the session pod to a minimal state with PV and helper containers to communicate
-   about, and change the state of the repo on-disk
+   about, and change the state of the repo on-disk.
 3. On session launch, check if an existing PV for the project/user exists - if yes, compare the requested state with the
-   state on disk and inform the user about a potential mismatch
+   state on disk and inform the user about a potential mismatch.
 
 ## Technical Details
 
@@ -232,14 +232,14 @@ following list:
 We need to prompt users with the possible session launch decisions in each of the possible launch flows. The following
 list shows when we should ask for users' decision for each launch flow:
 
-- **Quickstart**: The feedback should appear early in the first phase. With WebSockets in place, the UI should always
+- *Quickstart*: The feedback should appear early in the first phase. With WebSockets in place, the UI should always
   know the up-to-date state of sessions, so we know if we need to show an early message.
 
-- **Options**: We assume users might want to personalize resources or change branch/commit. Before allowing any change,
+- *Options*: We assume users might want to personalize resources or change branch/commit. Before allowing any change,
   the user should see the message and either `Connect to the sessions` or `Discard the changes` and then personalize the
   environment.
 
-- **Sharable link with specific commits**: this is a variation of the **Quickstart** since the user might be running
+- *Sharable link with specific commits*: this is a variation of the *Quickstart* since the user might be running
   another session and be unaware that the sharable link would nuke it. I propose adding a node to the graph above after
   “session PV exists —> Yes” to check whether there is an embedded commit (and that’s different from the running
   session). In that case, we mention something like:
@@ -248,7 +248,7 @@ list shows when we should ask for users' decision for each launch flow:
         - `Continue to the specific version` and lose the previous work
         - `Connect to your session` instead
 
-- **Anonymous**: We don’t preserve any work for anonymous users, so is the PV exists then the session is also running.
+- *Anonymous*: We don’t preserve any work for anonymous users, so is the PV exists then the session is also running.
 
 ## 🐰 Rabbit Holes
 
