@@ -72,7 +72,7 @@ issues with this approach of persisting session's state:
   a request from the container that creates the autosave before it can shut down. We also have to extend the graceful
   shutdown period for the pod to allow for all of this to happen.
 
-- … may more 😅
+- … many more 😅
 
 ### Summary
 
@@ -136,23 +136,23 @@ The main difference that we would introduce in Amalthea/Sessions is the followin
        - The `oauth2-proxy` container needs to stay for authenticating calls to the sidecar.
        - The `git-proxy` container needs to stay to inject credentials in calls the sidecar makes.
        - Users will see sessions in this **Reduced** form. The main reason for this is that we must surface information
-         about when the reduced form (and any of its data) will be removed. We should define what actions users will be
-         able to do to these reduced forms because they will differ from what is available to running/full forms.
-   - **Completely gone**:
-       - The scaled down version is removed after some period of not being used. The user should be somehow notified if
+         about when the **Reduced** form (and any of its data) will be removed. We should define what actions users will
+         be able to do to these **Reduced** sessions because they will differ from what is available to **Full** forms.
+   - **Deleted**:
+       - The **Reduced** version is deleted after some period of not being used. The user should be somehow notified if
          there is unsaved data here that will be deleted.
          The UI could mark the sessions about to expire with a warning sign; this might be more effective once we have
          the dashboard in place because the sessions should be in a primary spot.
        - This culling interval is different from the culling interval for the **Full** sessions.
 
 2. Shutting down a session (i.e. the user clicking the button in the UI to stop a session) results always in simply
-   going to the reduced form. In the case that the PV state is fully synced in git, we could consider removing the PV;
+   going to the **Reduced** form. In the case that the PV state is fully synced in git, we could consider removing the PV;
    keeping it around means, however, that we can start the session quicker next time (e.g. the data is already fetched).
 
-3. Culling active sessions turn them into reduced form. We can consider reducing the culling interval since part of the
-   motivation for keeping it long is to avoid too many autosave branches.
+3. Culling active sessions turn them into **Reduced** form. We can consider reducing the culling interval since part of
+   the motivation for keeping it long is to avoid too many autosave branches.
  
-4. Additional logic will cull the reduced forms with a separate (longer) culling interval.
+4. Additional logic will cull the **Reduced** forms with a separate (longer) culling interval.
 
 ### Launch Flow
 
@@ -277,8 +277,15 @@ list shows when we should ask for users' decision for each launch flow:
 
 ## Nice to Have
 
-- To notify users about deleting unsaved data (i.e. scaled-down sessions) that is unused for a while, an ideal solution
+- To notify users about deleting unsaved data (i.e. **Reduced** sessions) that is unused for a while, an ideal solution
   would be to email them for example 3 days and again 1 day in advance.This requires more pieces in the infrastructure.
 
 - Show a diff of the persisted session and the requested session (by the user) when asking the user to make decisions
   during session launch.
+
+- We should reflect the correct state from the backend on the UI to show proper feedback to the users. State of a
+  sessions can be **Full** (i.e. running), **Reduced**, **Starting**, **Stopping**, and **Error**.
+
+- When launching from a **Reduced** session, we should check that the environment doesn't differ between the **Reduced**
+  session and the requested version. This can be done by checking relevant files for the environment configuration. If
+  there is a difference, we should warn the user to either restore the session or start a new one.
