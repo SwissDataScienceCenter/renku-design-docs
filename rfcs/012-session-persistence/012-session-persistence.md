@@ -128,31 +128,60 @@ The main difference that we would introduce in Amalthea/Sessions is the followin
    - **Running**: This is the same as the current sessions
        - Containers: `oauth2-proxy`, `git-proxy`, `sidecar`, `session`
        - No changes from currently running sessions
-   - **Hibernate**:
+   - **Hibernating**:
        - Storage is retained, but the user’s container is gone; the user’s data and code are retained, so we do not need
          to create autosave branches anymore.
        - The `sidecar` container is kept to provide information about the repository in the PV; it is used by the
          clients (UI) to query the state of the user repo (is the repo dirty, what commit it is on, what branch, etc.).
        - The `oauth2-proxy` container needs to stay for authenticating calls to the sidecar.
        - The `git-proxy` container needs to stay to inject credentials in calls the sidecar makes.
-       - Users will see sessions in this **Hibernate** form. The main reason for this is that we must surface information
-         about when the **Hibernate** form (and any of its data) will be removed. We should define what actions users will
-         be able to do to these **Hibernate** sessions because they will differ from what is available to **Running** forms.
+       - Users will see sessions in this **Hibernating** form. The main reason for this is that we must surface information
+         about when the **Hibernating** form (and any of its data) will be removed. We should define what actions users will
+         be able to do to these **Hibernating** sessions because they will differ from what is available to **Running** forms.
    - **Deleted**:
-       - The **Hibernate** version is deleted after some period of not being used. The user should be somehow notified if
+       - The **Hibernating** version is deleted after some period of not being used. The user should be somehow notified if
          there is unsaved data here that will be deleted.
          The UI could mark the sessions about to expire with a warning sign; this might be more effective once we have
          the dashboard in place because the sessions should be in a primary spot.
        - This culling interval is different from the culling interval for the **Running** sessions.
 
 2. Shutting down a session (i.e. the user clicking the button in the UI to stop a session) results always in simply
-   going to the **Hibernate** form. In the case that the PV state is fully synced in git, we could consider removing the PV;
+   going to the **Hibernating** form. In the case that the PV state is fully synced in git, we could consider removing the PV;
    keeping it around means, however, that we can start the session quicker next time (e.g. the data is already fetched).
 
-3. Culling active sessions turn them into **Hibernate** form. We can consider reducing the culling interval since part of
+3. Culling active sessions turn them into **Hibernating** form. We can consider reducing the culling interval since part of
    the motivation for keeping it long is to avoid too many autosave branches.
  
-4. Additional logic will cull the **Hibernate** forms with a separate (longer) culling interval.
+4. Additional logic will cull the **Hibernating** forms with a separate (longer) culling interval.
+
+The following diagram shows the transition between various session states:
+
+```mermaid
+graph TD
+  no-session(No Session)
+  starting(Starting)
+  running(Running)
+  stopping(Stopping)
+  hibernating(Hibernating)
+  removing(Removing)
+  deleted(Deleted)
+  error(Error)
+
+  no-session --> |start| starting
+  starting --> running
+  starting --> |error| error
+  running --> |stop| stopping
+  running --> |culled| stopping
+  stopping --> hibernating
+  stopping --> |error| error
+  hibernating --> |start| starting
+  hibernating --> |remove| removing
+  hibernating --> |culled| removing
+  hibernating --> |error| error
+  removing --> deleted
+  deleted --> no-session
+  error --> no-session
+```
 
 ### Launch Flow
 
@@ -163,14 +192,14 @@ when needed.
 ```mermaid
 graph TD
   launch[Session launch] 
-  isRunning{is session running?}
+  is-running{is session running?}
   pv-exists{session PV exists}
   launch --> pv-exists
   pv-exists --> |yes| head{repo at branch head?}
   connect(connect to session)
   
   %% repo at HEAD, check if session is running
-  head --> |yes| isRunning
+  head --> |yes| is-running
   
   %% repo _not_ at HEAD, check the state 
   head --> |no| gitstate{repo is...}
@@ -182,23 +211,23 @@ graph TD
   check-ff --> |fast forward| ff(fast-forward & restart)
   ff --> start
   %% Done - connected to existing session, repo fast-forwarded
-  isRunning --> |yes| connect
+  is-running --> |yes| connect
   %% Done - started to new session, repo fast-forwarded
-  isRunning --> |no| start(start a new session)
+  is-running --> |no| start(start a new session)
 
   %% Cannot FF - either connect & fix or discard & launch new (at HEAD)
-  check-ff --> |connect| isRunning
-  connect-discard --> |connect| isRunning
-  connect-discard --> |discard| discardRestart
+  check-ff --> |connect| is-running
+  connect-discard --> |connect| is-running
+  connect-discard --> |discard| discard-restart
 
   %% Repo ahead, dirty or "weird" - connect & fix or discard
   gitstate --> |ahead or dirty HEAD| dirty(Message 2)
-  dirty --> |connect| isRunning
-  dirty --> |discard| discardRestart(Discard PV)
-  discardRestart --> start
+  dirty --> |connect| is-running
+  dirty --> |discard| discard-restart(Discard PV)
+  discard-restart --> start
   gitstate --> |weird| connect-discard(Message 3)
   
-  check-ff --> |discard| discardRestart
+  check-ff --> |discard| discard-restart
   
   %% No PV means also no session - start a new one at HEAD
   pv-exists --> |no| start
@@ -281,22 +310,22 @@ list shows when we should ask for users' decision for each launch flow:
 
 ## Nice to Have
 
-- To notify users about deleting unsaved data (i.e. **Hibernate** sessions) that is unused for a while, an ideal solution
+- To notify users about deleting unsaved data (i.e. **Hibernating** sessions) that is unused for a while, an ideal solution
   would be to email them for example 3 days and again 1 day in advance.This requires more pieces in the infrastructure.
 
 - Show a diff of the persisted session and the requested session (by the user) when asking the user to make decisions
   during session launch.
 
 - We should reflect the correct state from the backend on the UI to show proper feedback to the users. State of a
-  sessions can be **Running** (i.e. running), **Hibernate**, **Starting**, **Stopping**, and **Error**.
+  sessions can be **Running** (i.e. running), **Hibernating**, **Starting**, **Stopping**, and **Error**.
 
-- When launching from a **Hibernate** session, we should check that the environment doesn't differ between the **Hibernate**
+- When launching from a **Hibernating** session, we should check that the environment doesn't differ between the **Hibernating**
   session and the requested version. This can be done by checking relevant files for the environment configuration. If
   there is a difference, we should warn the user to either restore the session or start a new one.
 
 - We should use some tiny nodes to store hibernated session to reduce the cost.
 
-- We can remove the `oauth2-proxy`, `git-proxy`, and `sidecar` container in the **Hibernate** mode by storing some
+- We can remove the `oauth2-proxy`, `git-proxy`, and `sidecar` container in the **Hibernating** mode by storing some
   metadata about the session. We can then bring them up on-demand if we need to do some operations on the PV. We can
   store the PV in some cheaper storage (e.g. S3).
 
