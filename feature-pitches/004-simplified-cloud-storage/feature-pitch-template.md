@@ -128,37 +128,6 @@ config; just like in the UI case above, we should verify that they actually work
 during the pre-flight check. If they don’t work, prompt the user to enter them
 or offer the option of *not* mounting the data.
 
-### In the metadata
-
-The storage backend information has to be added to the Project metadata and the
-KG needs to return this information so that clients can access it.
-
-The metadata should be stored as nested objects in the `Project` entity inside
-the renku-python metadata.
-
-The [Renku Ontology](https://swissdatasciencecenter.github.io/renku-ontology/)
-gets extended as follows:
-
-`schema:Project` gets extended with a property `renku:hasStorage` that points to
-one or more `renku:RemoteStorage` entity. Each `renku:RemoteStorage` has an
-`id`, `provider` and `url` field. Further fields may be added in the future,
-especially storage provider specific ones, but for now the URL should be enough
-to define a storage (see below). The id follows the form
-`https://<renku-instance-host>/storage/<provider>/<host>/<bucket|container>` .
-E.g. `https://renkulab.io/storage/s3/amazonaws.com/giab`.
-
-`schema:Project` gets extended with an additional property `renku:mountpoints`
-that points to one or more `renku:StorageMount` which consist of an `id`,
-`renku:storage` pointing to the `id` of a `renku:RemoteStorage` and
-`renku:mountpath` containing a string of where in the project the storage should
-be mounted/copied to.
-
-Note that mount paths and storage are defined separately on the project, since
-different folders from the same storage might be mounted to different folders
-and to allow potential reuse of storage between projects with different mount
-paths.
-
-
 ### Valid storage URIs
 
 #### S3
