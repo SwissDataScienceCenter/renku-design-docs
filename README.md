@@ -1,7 +1,7 @@
 # Renku Design Documentation
 
 > [!NOTE]
-> Checkout the [Renku feature roadmap!](roadmap.md)
+> Checkout the [Renku feature roadmap!](./roadmap.md)
 
 New features in Renku often require complex coordination and planning among
 various components. They also require a careful study and understanding of
