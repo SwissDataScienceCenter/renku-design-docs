@@ -4,18 +4,25 @@ Welcome to the Renku Roadmap! Here we share the developments we are currently wo
 
 Want a feature that's not on here? [Submit a feature request!](https://github.com/SwissDataScienceCenter/renku/issues/new/choose)
 
+> [!IMPORTANT]
+> We are building the next version of Renku! (Currently referred to Renku 1.0) Would you like to get involved in shaping the future of Renku? Interested to participate in our user research? Get in touch! hello@renku.io
+
+## March 2023
+
+- [🤖 Renku 1.0 Compute Sessions](feature-pitches/010-compute-sessions/compute-sessions.md) - **planned**
+
+## January 2024
+
+- [✏️ Read/Write Cloud Storage](feature-pitches/007-read-write-cloud-storage/read-write-cloud-storage.md) - **released**
+
 ## December 2023
 
-**User facing changes**
+- [📌 Pin Projects to the Dashboard](feature-pitches/008-pin-to-dashboard/pin-to-dashboard.md) - **released**
 
-- [✏️ Read/Write Cloud Storage](feature-pitches/007-read-write-cloud-storage/read-write-cloud-storage.md)
+- [🎨 Redesign the Landing Page](feature-pitches/009-redesign-landing-page/redesign-landing-page.md) - **released**
 
-- [📌 Pin Projects to the Dashboard](feature-pitches/008-pin-to-dashboard/pin-to-dashboard.md)
+### Internal changes
 
-- [🎨 Redesign the Landing Page](feature-pitches/009-redesign-landing-page/redesign-landing-page.md)
+- [🐸 Start of the Renku Native Projects](feature-pitches/005-define-renku-native-projects-and-users/define-renku-native-projects-and-users.md) - **completed**
 
-**Internal changes**
-
-- [🐸 Start of the Renku Native Projects](feature-pitches/005-define-renku-native-projects-and-users/define-renku-native-projects-and-users.md)
-
-- [📈 Build Renku Product Metrics](feature-pitches/006-first-product-metrics/first-product-metrics.md)
+- [📈 Build Renku Product Metrics](feature-pitches/006-first-product-metrics/first-product-metrics.md) - **completed**
