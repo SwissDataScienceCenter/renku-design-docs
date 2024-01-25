@@ -9,7 +9,7 @@ Want a feature that's not on here? [Submit a feature request!](https://github.co
 
 ## March 2023
 
-- [🤖 Renku 1.0 Compute Sessions](feature-pitches/010-compute-sessions/compute-sessions.md.md) - **planned**
+- [🤖 Renku 1.0 Compute Sessions](feature-pitches/010-compute-sessions/compute-sessions.md) - **planned**
 
 ## January 2024
 

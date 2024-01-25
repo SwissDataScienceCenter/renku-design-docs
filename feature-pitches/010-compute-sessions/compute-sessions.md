@@ -5,9 +5,6 @@ Authors: Laura Kinkead, Rok Roškar
 > [!IMPORTANT]
 > We are building the next version of Renku! (Currently referred to Renku 1.0) Would you like to get involved in shaping the future of Renku? Interested to participate in our user research? Get in touch! hello@renku.io
 
-> [!NOTE]
-> We want to make big changes to Sessions in Renku 1.0! I think it’s helpful to keep in mind the **overall goals** we want to achieve in the long term to give context for this pitch, and so I have included much of this context. However, this pitch is about breaking off a 6-week **subset** of that vision! Please pay attention throughout this pitch to when I am painting the picture of what we want in Renku 1.0 *eventually*, and when I am describing the *subset* of that functionality that is scoped for this pitch as something we think we can accomplish in 6 weeks.
-
 ## 🤔 Problem
 
 Renku 1.0 needs sessions! But more than that, we want to improve on the current sessions, solving the following user problems:
@@ -96,6 +93,8 @@ This is something we want in Renku 1.0, but is out of scope for this build for t
 #### Adding a Session to a Project
 
 ![breadboard-add-session-pt-1.jpg](breadboard-add-session-pt-1.jpg)
+
+continuing to the right...
 
 ![breadboard-add-session-pt-2.jpg](breadboard-add-session-pt-2.jpg)
 
@@ -218,6 +217,4 @@ Do not redefine how a user builds an image for an environment or how this enviro
 
 ### No go: Access control (user permissions) guarding specific project sessions
 
-We can imagine it would be useful for a Renku developer to develop their project in one session, build a dashboard in another session, and then only give an external collaborator access to the dashboard session in the project (so that the collaborator doesn’t get confused by the development session?).
-
-However, this has potentially large implications, so defer to a future build.
+We can imagine it would be useful for a Renku developer to develop their project in one session, build a dashboard in another session, and then only give an external collaborator access to the dashboard session in the project (so that the collaborator doesn’t get confused by the development session?). However, this has potentially large implications, so defer to a future build.
