@@ -4,6 +4,9 @@ Welcome to the Renku Roadmap! Here we share the developments we are currently wo
 
 Want a feature that's not on here? [Submit a feature request!](https://github.com/SwissDataScienceCenter/renku/issues/new/choose)
 
+> [!IMPORTANT]
+> We are building the next version of Renku! (Currently referred to Renku 1.0) Would you like to get involved in shaping the future of Renku? Interested to participate in our user research? Get in touch! hello@renku.io
+
 ## March 2023
 
 - [🤖 Renku 1.0 Compute Sessions](feature-pitches/010-compute-sessions/compute-sessions.md.md) - **planned**

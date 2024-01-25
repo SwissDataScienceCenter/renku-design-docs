@@ -2,15 +2,11 @@
 
 Authors: Laura Kinkead, Rok Roškar
 
-<aside>
-🔶 Note: We want to make big changes to Sessions in Renku 1.0. I think it’s helpful to keep in mind the **overall goals** we want to achieve in the long term to give context for this pitch, and so I have included much of this context. However, this pitch is about breaking off a 6-week **subset** of that vision! Please pay attention throughout this pitch to when I am painting the picture of what we want in Renku 1.0 *eventually*, and when I am describing the *subset* of that functionality that is scoped for this pitch as something we think we can accomplish in 6 weeks.
-</aside>
+> [!IMPORTANT]
+> We are building the next version of Renku! (Currently referred to Renku 1.0) Would you like to get involved in shaping the future of Renku? Interested to participate in our user research? Get in touch! hello@renku.io
 
-<aside>
-🔶 Note: I use the similar terms “nice to have”, “for the future”, and “out of scope” throughout this pitch.  These terms have some overlap in meaning, so let’s define them up front:
-***nice to have**: a small extension that the build team may consider*if there is time*, but is not critical to build in this 6 week scope.
-* **for the future**: something that we’re quite confident we want in Renku 1.0, but is not feasible to build in this 6 week scope. But the build team may want to take this future direction under consideration when making design choices this build.
-</aside>
+> [!NOTE]
+> We want to make big changes to Sessions in Renku 1.0! I think it’s helpful to keep in mind the **overall goals** we want to achieve in the long term to give context for this pitch, and so I have included much of this context. However, this pitch is about breaking off a 6-week **subset** of that vision! Please pay attention throughout this pitch to when I am painting the picture of what we want in Renku 1.0 *eventually*, and when I am describing the *subset* of that functionality that is scoped for this pitch as something we think we can accomplish in 6 weeks.
 
 ## 🤔 Problem
 
@@ -59,10 +55,8 @@ An environment has the following properties:
 
 In Renku 1.0, Renku users search and reuse *environments* between projects. (However, enabling environment sharing and reuse is out of scope for this pitch! (See 'Sharing environments to be reused between projects' in the No-gos).
 
-<aside>
-🔶 Still to be shaped in the future: Are environments mutable? Are environments versioned? Can a user browse previous or related versions of an environment? Can an environment be updated? If so, are those updates propagated to project sessions that are using them?
-→ For the sake of this build, users cannot interact with environments directly.
-</aside>
+> [!NOTE]
+> Still to be shaped in the future: Are environments mutable? Are environments versioned? Can a user browse previous or related versions of an environment? Can an environment be updated? If so, are those updates propagated to project sessions that are using them?
 
 #### Session
 
