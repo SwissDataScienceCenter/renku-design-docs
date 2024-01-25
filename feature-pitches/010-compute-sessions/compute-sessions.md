@@ -90,7 +90,7 @@ This is something we want in Renku 1.0, but is out of scope for this build for t
 
 ### User Flows
 
-#### Adding a Session to a Project
+#### User Flow: Add a Session to a Project
 
 ![breadboard-add-session-pt-1.jpg](breadboard-add-session-pt-1.jpg)
 
@@ -122,19 +122,19 @@ A user has 4 options for adding a session to their project. Only the first 2 are
 
 ##### Priority 4: [for the future/out of scope] Search & select from preexisting RenkuLab environments
 
-#### Start Session
+#### User Flow: Start Session
 
 ![breadboard-start-session.jpg](breadboard-start-session.jpg)
 
-#### Configure Session [nice to have]
+#### User Flow: Configure Session [nice to have]
 
 ![breadboard-configure-session.jpg](breadboard-configure-session.jpg)
 
-#### Publish Session [for the future/out of scope]
+#### User Flow: Publish Session [for the future/out of scope]
 
 ![breadboard-publish-session.jpg](breadboard-publish-session.jpg)
 
-#### Publish Session [nice to have]
+#### User Flow: Update a Repo-Based Session [nice to have]
 
 ![breadboard-update-repo-based-session.jpg](breadboard-update-repo-based-session.jpg)
 
