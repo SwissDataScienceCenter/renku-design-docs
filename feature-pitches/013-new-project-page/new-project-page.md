@@ -34,7 +34,7 @@ In addition, we have some new overall UX goals:
 ## 🎯 Solution
 
 > [!IMPORTANT]
-> This pitch will be design-only. Implementing the design will come in a later build cycle.
+> This pitch is for a design-only cycle. Implementing the design will come in a later build cycle.
 
 ### Simplifying Project Creation
 
