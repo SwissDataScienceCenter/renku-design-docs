@@ -2,7 +2,8 @@
 
 Authors: Flora Thiebaut, Laura Kinkead
 
-> [!IMPORTANT] We are building the next version of Renku! (Currently referred to Renku 1.0) Would
+> [!IMPORTANT]
+> We are building the next version of Renku! (Currently referred to Renku 1.0) Would
 > you like to get involved in shaping the future of Renku? Interested to participate in our user
 > research? Get in touch! hello@renku.io
 
