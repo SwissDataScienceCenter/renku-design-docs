@@ -88,7 +88,7 @@ Changing a personal namespace should be accessible from the “Account” menu (
 
 #### Create a New Group
 
-![create_new_group.jpg](create_new_group.jpg)
+![create-new-group.jpg](create-new-group.jpg)
 
 #### View the Groups you a Member of
 
