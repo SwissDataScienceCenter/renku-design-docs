@@ -1,17 +1,17 @@
-# Renku 1.0 Project Page UX
+# Renku 2.0 Project Page UX
 
 Authors: Laura Kinkead
 
 > [!IMPORTANT]
-> We are building the next version of Renku! (Currently referred to Renku 1.0) Would
+> We are building the next version of Renku! (Currently referred to Renku 2.0) Would
 > you like to get involved in shaping the future of Renku? Interested to participate in our user
 > research? Get in touch! hello@renku.io
 
 ## 🤔 Problem
 
-Renku 1.0 needs a whole new Project Page. The components of a project in Renku 1.0 are fundamentally
-different than current projects. For example, Renku 1.0 projects may have multiple sessions, and
-therefore need more than 1 start button. Renku 1.0 projects may have more than 1 code repository, so
+Renku 2.0 needs a whole new Project Page. The components of a project in Renku 2.0 are fundamentally
+different than current projects. For example, Renku 2.0 projects may have multiple sessions, and
+therefore need more than 1 start button. Renku 2.0 projects may have more than 1 code repository, so
 having 1 files tab doesn’t necessarily make sense anymore. This pitch is **not**  “let’s improve the
 UX of the current project page”. It is a fundamental rethinking of what the project page is.
 
