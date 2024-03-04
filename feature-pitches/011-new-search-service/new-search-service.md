@@ -1,15 +1,15 @@
-# Renku 1.0 Project and User Search Service
+# Renku 2.0 Project and User Search Service
 
 Authors: Laura Kinkead
 
 > [!IMPORTANT]
-> We are building the next version of Renku! (Currently referred to Renku 1.0) Would
+> We are building the next version of Renku! (Currently referred to Renku 2.0) Would
 > you like to get involved in shaping the future of Renku? Interested to participate in our user
 > research? Get in touch! hello@renku.io
 
 ## 🤔 Problem
 
-In Renku 1.0, we want projects, users, environments, etc. to be searchable. This pitch is the first
+In Renku 2.0, we want projects, users, environments, etc. to be searchable. This pitch is the first
 start towards the new Renku Search and Discovery services.  
 
 ## 🍴 Appetite
