@@ -1,9 +1,9 @@
-# Renku 1.0 User & Group Namespaces
+# Renku 2.0 User & Group Namespaces
 
 Authors: Flora Thiebaut, Laura Kinkead
 
 > [!IMPORTANT]
-> We are building the next version of Renku! (Currently referred to Renku 1.0) Would
+> We are building the next version of Renku! (Currently referred to Renku 2.0) Would
 > you like to get involved in shaping the future of Renku? Interested to participate in our user
 > research? Get in touch! hello@renku.io
 
@@ -68,13 +68,13 @@ Namespace slugs should be modifiable, otherwise name squatting will be too big o
 ### Selecting a User Namespace
 
 Pre-existing RenkuLab users do not have a username! Therefore they will need to select/confirm a
-username upon entering Renku 1.0.
+username upon entering Renku 2.0.
 
-Users with access to Renku 1.0 should have a personal namespace which is their username.
+Users with access to Renku 2.0 should have a personal namespace which is their username.
 
 Implicit flow:
 
-1. User connects to the Renku 1.0 dashboard or any other Renku 1.0 page.
+1. User connects to the Renku 2.0 dashboard or any other Renku 2.0 page.
 2. API request checks if there is already a personal namespace for the user.
 3. If not, a namespace is created using the GitLab username, or GitLab `username_rand123` where a
    small random string is used in case of conflict.
