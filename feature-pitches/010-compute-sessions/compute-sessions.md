@@ -1,13 +1,13 @@
-# Renku 1.0 Compute Sessions
+# Renku 2.0 Compute Sessions
 
 Authors: Laura Kinkead, Rok Roškar
 
 > [!IMPORTANT]
-> We are building the next version of Renku! (Currently referred to Renku 1.0) Would you like to get involved in shaping the future of Renku? Interested to participate in our user research? Get in touch! hello@renku.io
+> We are building the next version of Renku! (Currently referred to Renku 2.0) Would you like to get involved in shaping the future of Renku? Interested to participate in our user research? Get in touch! hello@renku.io
 
 ## 🤔 Problem
 
-Renku 1.0 needs sessions! But more than that, we want to improve on the current sessions, solving the following user problems:
+Renku 2.0 needs sessions! But more than that, we want to improve on the current sessions, solving the following user problems:
 
 - When I am starting a new project, I want to **start out with a basic compute environment** (for example with a pre-built data science stack), and I’ll decide what extra packages I need later.
 - When I create a new Renku project, I want to get started right away with a pre-built environment- **I don’t want to have to wait for the environment image to be built** to get started.
@@ -27,7 +27,7 @@ There are a few ways we want 1.0 Environments to work in the future that we won�
 
 ## 🎯 Solution
 
-In Renku 1.0 (generally, not already in this pitch!), we want to enable 2 key new features:
+In Renku 2.0 (generally, not already in this pitch!), we want to enable 2 key new features:
 
 - Enabling more than one environment per project
 - Sharing environments between projects
@@ -50,7 +50,7 @@ An environment has the following properties:
 - [optional] description (e.g. why it is useful)
 - [optional] keywords/tags to aid in searching (for example, I might tag an environment with `#python` `#pytorch` to give a quick impression of what is in the image)
 
-In Renku 1.0, Renku users search and reuse *environments* between projects. (However, enabling environment sharing and reuse is out of scope for this pitch! (See 'Sharing environments to be reused between projects' in the No-gos).
+In Renku 2.0, Renku users search and reuse *environments* between projects. (However, enabling environment sharing and reuse is out of scope for this pitch! (See 'Sharing environments to be reused between projects' in the No-gos).
 
 > [!NOTE]
 > Still to be shaped in the future: Are environments mutable? Are environments versioned? Can a user browse previous or related versions of an environment? Can an environment be updated? If so, are those updates propagated to project sessions that are using them?
@@ -84,9 +84,9 @@ Session configuration is project-specific.
 
 #### Session Front-End [for the future/out of scope]
 
-In Renku 1.0, we would like to offer that a user can swap out different front ends to their sessions, independently of the session environment. So, a user could find a data science environment on Renku that they want to reuse, and but use VSCode instead of Jupyter as the front end for the session without changing the rest of the environment.
+In Renku 2.0, we would like to offer that a user can swap out different front ends to their sessions, independently of the session environment. So, a user could find a data science environment on Renku that they want to reuse, and but use VSCode instead of Jupyter as the front end for the session without changing the rest of the environment.
 
-This is something we want in Renku 1.0, but is out of scope for this build for the sake of time.
+This is something we want in Renku 2.0, but is out of scope for this build for the sake of time.
 
 ### User Flows
 
