@@ -5,17 +5,17 @@ Welcome to the Renku Roadmap! Here we share the developments we are currently wo
 Want a feature that's not on here? [Submit a feature request!](https://github.com/SwissDataScienceCenter/renku/issues/new/choose)
 
 > [!IMPORTANT]
-> We are building the next version of Renku! (Currently referred to Renku 1.0) Would you like to get involved in shaping the future of Renku? Interested to participate in our user research? Get in touch! hello@renku.io
+> We are building the next version of Renku! (Currently referred to Renku 2.0) Would you like to get involved in shaping the future of Renku? Interested to participate in our user research? Get in touch! hello@renku.io
 
 ## May 2024
 
-- [🎆 Renku 1.0 Project Page](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/38) - **👷 Development**
+- [🎆 Renku 2.0 Project Page](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/38) - **👷 Development**
 
 ## March 2024
 
-- [🤖 Renku 1.0 Compute Sessions](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/35) - **👷 Development**
-- [🔍 Renku 1.0 Search Service](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/36) - **👷 Development**
-- [⏹ Renku 1.0 Namespaces](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/37) - **👷 Development**
+- [🤖 Renku 2.0 Compute Sessions](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/35) - **👷 Development**
+- [🔍 Renku 2.0 Search Service](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/36) - **👷 Development**
+- [⏹ Renku 2.0 Namespaces](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/37) - **👷 Development**
 
 ## January 2024
 
@@ -29,6 +29,6 @@ Want a feature that's not on here? [Submit a feature request!](https://github.co
 
 ### Internal changes
 
-- [🐸 Start of the Renku 1.0 Projects](feature-pitches/005-define-renku-native-projects-and-users/define-renku-native-projects-and-users.md) - **✅ Released**
+- [🐸 Start of the Renku 2.0 Projects](feature-pitches/005-define-renku-native-projects-and-users/define-renku-native-projects-and-users.md) - **✅ Released**
 
 - [📈 Build Renku Product Metrics](feature-pitches/006-first-product-metrics/first-product-metrics.md) - **✅ Released**
