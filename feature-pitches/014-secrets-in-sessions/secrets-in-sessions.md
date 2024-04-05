@@ -16,8 +16,8 @@ Users want to use secrets in sessions to be able to:
 
 - connect to a database
 - reach further services safely (storage, HPC, etc).
-- Below are from [PR: Facilitated storage compute
-  access](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/29]:
+- Below are from [Design Docs PR: Facilitated storage compute
+  access](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/29):
   - query a large private data archive to discover and select datasets
   - fetch small datasets from the private data archive and explore them interactively
   - submit processing of the datasets to private computing cluster storing the results in private
