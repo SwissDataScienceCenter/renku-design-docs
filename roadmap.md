@@ -14,7 +14,7 @@ Want a feature that's not on here? [Submit a feature request!](https://github.co
 - [🎆 Renku 2.0 Project Page](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/38) - **👷 Development**
 - 🔐 Renku 2.0 Member Authorization - **👷 Development**
 - [🤫 Bringing Secrets to Sessions](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/41) - **👷 Development**
-- [🪓 Set Custom Culling times per Resource Pool](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/XXXXXXXXXXXXX) - **👷 Development**
+- [🪓 Set Custom Culling times per Resource Pool](https://github.com/SwissDataScienceCenter/renku-design-docs/pull/42) - **👷 Development**
 
 ## March 2024
 
